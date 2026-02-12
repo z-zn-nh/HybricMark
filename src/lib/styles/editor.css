@@ -1,0 +1,28 @@
+.hm-editor-root {
+  width: 100%;
+}
+
+.hm-editor-root .hm-editor-content {
+  min-height: 7rem;
+  font-size: 1rem;
+}
+
+.hm-editor-root .hm-editor-content:focus {
+  outline: none;
+}
+
+.hm-editor-root .hm-editor-content > *:first-child {
+  margin-top: 0;
+}
+
+.hm-editor-root .hm-editor-content > *:last-child {
+  margin-bottom: 0;
+}
+
+.hm-editor-root .hm-editor-content p.is-editor-empty:first-child::before {
+  color: rgb(148 163 184);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
