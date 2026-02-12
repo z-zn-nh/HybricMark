@@ -19,6 +19,7 @@ import markdownItFootnote from "markdown-it-footnote";
 import markdownItMark from "markdown-it-mark";
 import markdownItSub from "markdown-it-sub";
 import markdownItSup from "markdown-it-sup";
+import markdownItTaskLists from "markdown-it-task-lists";
 import { useEffect, useMemo, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 import type { Content, Editor } from "@tiptap/core";
@@ -45,6 +46,7 @@ const markdownParser = new MarkdownIt({
   typographer: true,
   breaks: false,
 })
+  .use(markdownItTaskLists, { enabled: true })
   .use(markdownItFootnote)
   .use(markdownItMark)
   .use(markdownItSub)
@@ -52,8 +54,184 @@ const markdownParser = new MarkdownIt({
 
 const normalizeLineBreaks = (value: string): string => value.replace(/\r\n/g, "\n");
 
+const normalizeTaskListHtml = (html: string): string => {
+  if (typeof DOMParser === "undefined") {
+    return html;
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  const taskItems = Array.from(doc.querySelectorAll("li.task-list-item"));
+
+  taskItems.forEach((item) => {
+    const checkbox = item.querySelector("input.task-list-item-checkbox") as HTMLInputElement | null;
+    if (!checkbox) {
+      return;
+    }
+
+    const checked = checkbox.checked || checkbox.hasAttribute("checked");
+    const childNodes = Array.from(item.childNodes).filter((node) => {
+      return !(node instanceof HTMLInputElement && node.classList.contains("task-list-item-checkbox"));
+    });
+
+    item.replaceChildren();
+    item.setAttribute("data-type", "taskItem");
+    item.setAttribute("data-checked", checked ? "true" : "false");
+    item.classList.remove("task-list-item");
+
+    const label = doc.createElement("label");
+    label.setAttribute("contenteditable", "false");
+
+    const input = doc.createElement("input");
+    input.type = "checkbox";
+    if (checked) {
+      input.setAttribute("checked", "checked");
+    }
+
+    const marker = doc.createElement("span");
+    label.append(input, marker);
+
+    const content = doc.createElement("div");
+    const inlineContainer = doc.createElement("p");
+    const blockTags = new Set(["UL", "OL", "P", "DIV", "PRE", "BLOCKQUOTE", "TABLE"]);
+
+    childNodes.forEach((node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.textContent ?? "";
+        if (text.trim().length > 0) {
+          inlineContainer.appendChild(doc.createTextNode(text));
+        }
+        return;
+      }
+
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return;
+      }
+
+      const element = node as HTMLElement;
+      if (element.tagName === "LABEL") {
+        const text = element.textContent?.trim() ?? "";
+        if (text.length > 0) {
+          inlineContainer.appendChild(doc.createTextNode(text));
+        }
+        return;
+      }
+
+      if (blockTags.has(element.tagName)) {
+        const nestedCheckboxes = Array.from(
+          element.querySelectorAll("input.task-list-item-checkbox"),
+        );
+        nestedCheckboxes.forEach((input) => input.remove());
+
+        if (
+          element.tagName === "P" &&
+          (element.textContent ?? "").trim().length === 0 &&
+          element.children.length === 0
+        ) {
+          return;
+        }
+
+        if ((inlineContainer.textContent ?? "").trim().length > 0 || inlineContainer.childNodes.length > 0) {
+          content.appendChild(inlineContainer.cloneNode(true));
+          inlineContainer.replaceChildren();
+        }
+        content.appendChild(element);
+        return;
+      }
+
+      inlineContainer.appendChild(element);
+    });
+
+    if ((inlineContainer.textContent ?? "").trim().length > 0 || inlineContainer.childNodes.length > 0) {
+      content.appendChild(inlineContainer);
+    } else if (!content.firstChild) {
+      content.appendChild(doc.createElement("p"));
+    }
+
+    item.append(label, content);
+  });
+
+  const unorderedLists = Array.from(doc.querySelectorAll("ul"));
+  unorderedLists.forEach((list) => {
+    const directItems = Array.from(list.children).filter(
+      (child): child is HTMLLIElement => child instanceof HTMLLIElement,
+    );
+    if (directItems.length === 0) {
+      return;
+    }
+
+    const segments: Array<{
+      type: "task" | "normal";
+      items: HTMLLIElement[];
+    }> = [];
+
+    let currentType: "task" | "normal" | null = null;
+    let bucket: HTMLLIElement[] = [];
+
+    directItems.forEach((item) => {
+      const nextType =
+        item.getAttribute("data-type") === "taskItem" ? "task" : "normal";
+
+      if (currentType === null) {
+        currentType = nextType;
+      }
+
+      if (nextType !== currentType) {
+        segments.push({ type: currentType, items: bucket });
+        bucket = [item];
+        currentType = nextType;
+        return;
+      }
+
+      bucket.push(item);
+    });
+
+    if (currentType && bucket.length > 0) {
+      segments.push({ type: currentType, items: bucket });
+    }
+
+    if (segments.length === 1) {
+      if (segments[0].type === "task") {
+        list.setAttribute("data-type", "taskList");
+      }
+      list.classList.remove("contains-task-list");
+      return;
+    }
+
+    const parent = list.parentElement;
+    if (!parent) {
+      return;
+    }
+
+    segments.forEach((segment) => {
+      const nextList = doc.createElement("ul");
+      if (segment.type === "task") {
+        nextList.setAttribute("data-type", "taskList");
+      }
+
+      segment.items.forEach((item) => {
+        nextList.appendChild(item);
+      });
+
+      parent.insertBefore(nextList, list);
+    });
+
+    list.remove();
+  });
+
+  const taskLists = Array.from(doc.querySelectorAll("ul[data-type='taskList']"));
+  taskLists.forEach((list) => {
+    if (!list.querySelector("li[data-type='taskItem']")) {
+      list.removeAttribute("data-type");
+    }
+    list.classList.remove("contains-task-list");
+  });
+
+  return doc.body.innerHTML;
+};
+
 const convertMarkdownToHtml = (markdown: string): string =>
-  markdownParser.render(normalizeLineBreaks(markdown));
+  normalizeTaskListHtml(markdownParser.render(normalizeLineBreaks(markdown)));
 
 const createUuid = (): string => {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -194,7 +372,7 @@ export const HybricEditor = ({
       attributes: {
         class: "hm-editor-content",
       },
-      handleClick: (view, _pos, event) => {
+      handleClick: (_view, _pos, event) => {
         const mouseEvent = event as MouseEvent;
         const target = mouseEvent.target as HTMLElement | null;
         const anchor = target?.closest("a");
@@ -204,12 +382,21 @@ export const HybricEditor = ({
           return false;
         }
 
-        if (mouseEvent.metaKey || mouseEvent.ctrlKey || !view.editable) {
-          window.open(href, "_blank", "noopener,noreferrer");
-          return true;
+        mouseEvent.preventDefault();
+
+        if (href.startsWith("#")) {
+          const id = href.slice(1);
+          const destination = document.getElementById(id);
+          if (destination) {
+            destination.scrollIntoView({ behavior: "smooth", block: "start" });
+            return true;
+          }
+
+          return false;
         }
 
-        return false;
+        window.open(href, "_blank", "noopener,noreferrer");
+        return true;
       },
     },
   });

@@ -50,43 +50,49 @@
 
 .hm-prose h1,
 .hm-editor-root .hm-editor-content h1 {
-  margin: 1.1em 0 0.7em;
-  border-bottom: 1px solid #d8dee4;
-  padding-bottom: 0.28em;
+  margin: 24px 0 16px;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
   font-size: 2em;
+  line-height: 1.25;
 }
 
 .hm-prose h2,
 .hm-editor-root .hm-editor-content h2 {
-  margin: 1em 0 0.64em;
-  border-bottom: 1px solid #d8dee4;
-  padding-bottom: 0.24em;
+  margin: 24px 0 16px;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
   font-size: 1.5em;
+  line-height: 1.25;
 }
 
 .hm-prose h3,
 .hm-editor-root .hm-editor-content h3 {
-  margin: 0.9em 0 0.58em;
+  margin: 24px 0 16px;
   font-size: 1.25em;
+  line-height: 1.25;
 }
 
 .hm-prose h4,
 .hm-editor-root .hm-editor-content h4 {
-  margin: 0.78em 0 0.5em;
-  font-size: 1.08em;
+  margin: 24px 0 16px;
+  font-size: 1em;
+  line-height: 1.25;
 }
 
 .hm-prose h5,
 .hm-editor-root .hm-editor-content h5 {
-  margin: 0.72em 0 0.45em;
-  font-size: 0.96em;
+  margin: 24px 0 16px;
+  font-size: 0.875em;
+  line-height: 1.25;
 }
 
 .hm-prose h6,
 .hm-editor-root .hm-editor-content h6 {
-  margin: 0.68em 0 0.42em;
-  font-size: 0.88em;
-  color: #57606a;
+  margin: 24px 0 16px;
+  font-size: 0.85em;
+  color: #6a737d;
+  line-height: 1.25;
 }
 
 .hm-prose ul,

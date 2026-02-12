@@ -21,6 +21,14 @@ export const HtmlBlock = Node.create<HtmlBlockOptions>({
     return [
       {
         tag: "div:not([data-type])",
+        getAttrs: (element) => {
+          const htmlElement = element as HTMLElement;
+          if (htmlElement.closest('li[data-type="taskItem"]')) {
+            return false;
+          }
+
+          return null;
+        },
       },
     ];
   },
