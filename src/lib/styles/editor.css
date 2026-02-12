@@ -1,28 +1,470 @@
-.hm-editor-root {
+﻿.hm-editor-root {
   width: 100%;
 }
 
+.hm-prose,
 .hm-editor-root .hm-editor-content {
+  width: 100%;
   min-height: 7rem;
+  color: #333333;
+  font-family: "Inter", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   font-size: 1rem;
+  line-height: 1.7;
+  outline: none;
 }
 
 .hm-editor-root .hm-editor-content:focus {
   outline: none;
 }
 
+.hm-prose > *:first-child,
 .hm-editor-root .hm-editor-content > *:first-child {
   margin-top: 0;
 }
 
+.hm-prose > *:last-child,
 .hm-editor-root .hm-editor-content > *:last-child {
   margin-bottom: 0;
 }
 
+.hm-prose p,
+.hm-editor-root .hm-editor-content p {
+  margin: 0.65em 0;
+}
+
+.hm-prose h1,
+.hm-editor-root .hm-editor-content h1,
+.hm-prose h2,
+.hm-editor-root .hm-editor-content h2,
+.hm-prose h3,
+.hm-editor-root .hm-editor-content h3,
+.hm-prose h4,
+.hm-editor-root .hm-editor-content h4,
+.hm-prose h5,
+.hm-editor-root .hm-editor-content h5,
+.hm-prose h6,
+.hm-editor-root .hm-editor-content h6 {
+  color: #24292f;
+  font-weight: 600;
+}
+
+.hm-prose h1,
+.hm-editor-root .hm-editor-content h1 {
+  margin: 1.1em 0 0.7em;
+  border-bottom: 1px solid #d8dee4;
+  padding-bottom: 0.28em;
+  font-size: 2em;
+}
+
+.hm-prose h2,
+.hm-editor-root .hm-editor-content h2 {
+  margin: 1em 0 0.64em;
+  border-bottom: 1px solid #d8dee4;
+  padding-bottom: 0.24em;
+  font-size: 1.5em;
+}
+
+.hm-prose h3,
+.hm-editor-root .hm-editor-content h3 {
+  margin: 0.9em 0 0.58em;
+  font-size: 1.25em;
+}
+
+.hm-prose h4,
+.hm-editor-root .hm-editor-content h4 {
+  margin: 0.78em 0 0.5em;
+  font-size: 1.08em;
+}
+
+.hm-prose h5,
+.hm-editor-root .hm-editor-content h5 {
+  margin: 0.72em 0 0.45em;
+  font-size: 0.96em;
+}
+
+.hm-prose h6,
+.hm-editor-root .hm-editor-content h6 {
+  margin: 0.68em 0 0.42em;
+  font-size: 0.88em;
+  color: #57606a;
+}
+
+.hm-prose ul,
+.hm-editor-root .hm-editor-content ul,
+.hm-prose ol,
+.hm-editor-root .hm-editor-content ol {
+  margin: 0.65em 0;
+  padding-left: 1.4em;
+}
+
+.hm-prose ul,
+.hm-editor-root .hm-editor-content ul {
+  list-style: disc;
+}
+
+.hm-prose ol,
+.hm-editor-root .hm-editor-content ol {
+  list-style: decimal;
+}
+
+.hm-prose li,
+.hm-editor-root .hm-editor-content li {
+  margin: 0.22em 0;
+}
+
+.hm-prose ul ul,
+.hm-editor-root .hm-editor-content ul ul {
+  margin: 0.2em 0 0.2em 0.2em;
+  list-style: circle;
+}
+
+.hm-prose ul ul ul,
+.hm-editor-root .hm-editor-content ul ul ul {
+  list-style: square;
+}
+
+.hm-prose ol ol,
+.hm-editor-root .hm-editor-content ol ol {
+  list-style: lower-alpha;
+}
+
+.hm-prose ol ol ol,
+.hm-editor-root .hm-editor-content ol ol ol {
+  list-style: lower-roman;
+}
+
+.hm-prose a,
+.hm-editor-root .hm-editor-content a {
+  color: #0969da;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hm-prose a:hover,
+.hm-editor-root .hm-editor-content a:hover {
+  text-decoration: underline;
+}
+
+.hm-prose blockquote,
+.hm-editor-root .hm-editor-content blockquote {
+  margin: 0.7em 0;
+  border-left: 4px solid #dfe2e5;
+  padding-left: 1em;
+  color: #6a737d;
+}
+
+.hm-prose table,
+.hm-editor-root .hm-editor-content table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.hm-prose th,
+.hm-editor-root .hm-editor-content th,
+.hm-prose td,
+.hm-editor-root .hm-editor-content td {
+  border: 1px solid #d0d7de;
+  padding: 0.44em 0.72em;
+}
+
+.hm-prose thead th,
+.hm-editor-root .hm-editor-content thead th {
+  background: #f6f8fa;
+}
+
+.hm-prose tbody tr:nth-child(2n),
+.hm-editor-root .hm-editor-content tbody tr:nth-child(2n) {
+  background: #f6f8fa;
+}
+
+.hm-prose code,
+.hm-editor-root .hm-editor-content code {
+  border-radius: 4px;
+  background: #f3f4f4;
+  padding: 0.2em 0.4em;
+  margin: 0 1px;
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.9em;
+  white-space: nowrap;
+  color: #24292f;
+}
+
+.hm-prose code + code,
+.hm-editor-root .hm-editor-content code + code {
+  margin-left: 2px;
+}
+
+.hm-prose strong,
+.hm-editor-root .hm-editor-content strong {
+  font-weight: 600;
+}
+
+.hm-prose em,
+.hm-editor-root .hm-editor-content em {
+  font-style: italic;
+}
+
+.hm-prose u,
+.hm-editor-root .hm-editor-content u {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 1px;
+}
+
+.hm-prose s,
+.hm-editor-root .hm-editor-content s {
+  text-decoration: line-through;
+}
+
+.hm-prose mark,
+.hm-editor-root .hm-editor-content mark {
+  border-radius: 3px;
+  background: #fff3bf;
+  padding: 0 0.2em;
+}
+
+.hm-prose sub,
+.hm-editor-root .hm-editor-content sub {
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: sub;
+}
+
+.hm-prose sup,
+.hm-editor-root .hm-editor-content sup {
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.hm-prose pre,
+.hm-editor-root .hm-editor-content pre {
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  background: #f6f8fa;
+  padding: 0.75em 1em;
+}
+
+.hm-prose pre code,
+.hm-editor-root .hm-editor-content pre code {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  white-space: pre;
+}
+
+.hm-prose pre code::before,
+.hm-editor-root .hm-editor-content pre code::before,
+.hm-prose pre code::after,
+.hm-editor-root .hm-editor-content pre code::after {
+  content: none;
+}
+
+.hm-prose ul[data-type="taskList"],
+.hm-editor-root .hm-editor-content ul[data-type="taskList"] {
+  margin: 0.65em 0;
+  list-style: none;
+  padding-left: 0;
+}
+
+.hm-prose li[data-checked],
+.hm-editor-root .hm-editor-content li[data-checked] {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+  margin: 0.32em 0;
+}
+
+.hm-prose li[data-checked] > label,
+.hm-editor-root .hm-editor-content li[data-checked] > label {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.2em;
+  user-select: none;
+}
+
+.hm-prose li[data-checked] > label > span,
+.hm-editor-root .hm-editor-content li[data-checked] > label > span {
+  display: none;
+}
+
+.hm-prose li[data-checked] > label > input,
+.hm-editor-root .hm-editor-content li[data-checked] > label > input {
+  width: 0.95em;
+  height: 0.95em;
+  accent-color: #0969da;
+}
+
+.hm-prose li[data-checked] > div,
+.hm-editor-root .hm-editor-content li[data-checked] > div {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hm-prose li[data-checked] > div > p,
+.hm-editor-root .hm-editor-content li[data-checked] > div > p {
+  margin: 0;
+}
+
+.hm-prose li[data-checked="true"] > div,
+.hm-editor-root .hm-editor-content li[data-checked="true"] > div {
+  color: #6e7781;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.hm-prose .tableWrapper,
+.hm-editor-root .hm-editor-content .tableWrapper {
+  margin: 0.75em 0;
+  overflow-x: auto;
+}
+
+.hm-prose .tiptap-mathematics-render[data-type="inline-math"],
+.hm-editor-root .hm-editor-content .tiptap-mathematics-render[data-type="inline-math"] {
+  display: inline-block;
+  margin: 0 0.15em;
+  border-radius: 4px;
+  padding: 0 0.2em;
+}
+
+.hm-prose .tiptap-mathematics-render[data-type="block-math"],
+.hm-editor-root .hm-editor-content .tiptap-mathematics-render[data-type="block-math"] {
+  margin: 0.8em 0;
+  border: 1px solid #d8dee4;
+  border-radius: 6px;
+  background: #f6f8fa;
+  padding: 0.55em 0.8em;
+  overflow-x: auto;
+}
+
+.hm-prose img,
+.hm-editor-root .hm-editor-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.hm-prose .hm-html-block,
+.hm-editor-root .hm-editor-content .hm-html-block {
+  margin: 0.72em 0;
+}
+
+.hm-prose .footnotes,
+.hm-editor-root .hm-editor-content .footnotes {
+  margin-top: 1.2em;
+  border-top: 1px solid #d0d7de;
+  padding-top: 0.8em;
+  color: #57606a;
+  font-size: 0.9em;
+}
+
+.hm-prose .footnotes ol,
+.hm-editor-root .hm-editor-content .footnotes ol {
+  margin: 0.4em 0;
+  padding-left: 1.4em;
+}
+
+.hm-prose .footnote-ref,
+.hm-editor-root .hm-editor-content .footnote-ref {
+  font-size: 0.78em;
+  vertical-align: super;
+}
+
+.hm-prose a[href^="#fn"],
+.hm-editor-root .hm-editor-content a[href^="#fn"] {
+  font-size: 0.78em;
+  vertical-align: super;
+}
+
+.hm-prose .footnote-backref,
+.hm-editor-root .hm-editor-content .footnote-backref {
+  margin-left: 0.3em;
+  color: #0969da;
+  text-decoration: none;
+}
+
+.hm-prose .footnote-backref:hover,
+.hm-editor-root .hm-editor-content .footnote-backref:hover {
+  text-decoration: underline;
+}
+
+.hm-prose p.is-editor-empty:first-child::before,
 .hm-editor-root .hm-editor-content p.is-editor-empty:first-child::before {
-  color: rgb(148 163 184);
+  color: #94a3b8;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
+}
+
+.hm-context-menu {
+  min-width: 224px;
+  border: 1px solid #d0d7de;
+  border-radius: 0;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(31, 35, 40, 0.12);
+  padding: 4px 0;
+}
+
+.hm-context-menu-label {
+  padding: 4px 12px 2px;
+  color: #6e7781;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hm-context-menu-separator {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 4px 0;
+}
+
+.hm-context-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  line-height: 1.25;
+  color: #24292f;
+  user-select: none;
+  outline: none;
+}
+
+.hm-context-menu-item[data-highlighted] {
+  background: #f3f4f6;
+}
+
+.hm-context-menu-item[data-disabled] {
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.hm-context-menu-item-leading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hm-context-menu-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: #57606a;
+}
+
+.hm-context-menu-item-danger {
+  color: #cf222e;
+}
+
+.hm-context-menu-item-danger .hm-context-menu-icon {
+  color: #cf222e;
+}
+
+.hm-context-menu-icon-danger {
+  color: #cf222e;
 }
