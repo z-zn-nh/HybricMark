@@ -13,13 +13,13 @@
     "headless",
     "typora"
   ],
-  "homepage": "https://your-vercel-link-placeholder.com",
+  "homepage": "https://github.com/z-zn-nh/HybricMark",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/hybricmark.git"
+    "url": "https://github.com/z-zn-nh/HybricMark.git"
   },
   "bugs": {
-    "url": "https://github.com/your-username/hybricmark/issues"
+    "url": "https://github.com/z-zn-nh/HybricMark/issues"
   },
   "type": "module",
   "main": "./dist/hybricmark.umd.js",

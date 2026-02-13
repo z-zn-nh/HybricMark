@@ -4,7 +4,7 @@
 
 A Headless, Typora-like Markdown Editor for React. Built on Tiptap.
 
-👉 [Live Demo & Docs](https://your-vercel-link-placeholder.com)
+-> [Live Demo & Docs](https://your-vercel-link-placeholder.com)
 
 ## Features
 
