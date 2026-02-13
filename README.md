@@ -1,73 +1,66 @@
-# React + TypeScript + Vite
+# hybricmark
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![npm version](https://img.shields.io/npm/v/hybricmark.svg)](https://www.npmjs.com/package/hybricmark)
 
-Currently, two official plugins are available:
+A Headless, Typora-like Markdown Editor for React. Built on Tiptap.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+👉 [Live Demo & Docs](https://your-vercel-link-placeholder.com)
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Hybrid Editing (WYSIWYG + Markdown shortcuts).
+- Unique Block IDs (Ready for block-based apps).
+- Typora-style Context Menu.
+- Performance optimized for large docs.
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install hybricmark
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```tsx
+import { useState } from "react";
+import { HybricEditor } from "hybricmark";
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+export default function App() {
+  const [json, setJson] = useState(null);
+
+  return (
+    <div style={{ maxWidth: 860, margin: "40px auto" }}>
+      <HybricEditor
+        content="# Hello hybricmark\n\nStart typing..."
+        editable
+        onChange={(editor) => setJson(editor.getJSON())}
+      />
+      <pre style={{ marginTop: 24, fontSize: 12 }}>
+        {JSON.stringify(json, null, 2)}
+      </pre>
+    </div>
+  );
+}
 ```
+
+## API
+
+### `HybricEditor` Props
+
+- `content?: Content` - Initial content.
+- `editable?: boolean` - Whether the editor is editable.
+- `onChange?: (editor) => void` - Called on editor updates.
+- `onExtract?: (data: { id: string; content: JSON }) => void` - Called when extracting block data.
+- `className?: string` - Custom wrapper class.
+
+## Development
+
+```bash
+npm run dev
+npm run lint
+npm run build
+```
+
+## License
+
+MIT

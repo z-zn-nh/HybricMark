@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "tailwindcss/utilities" prefix(hm);
+@source "../**/*.{js,ts,jsx,tsx,html}";
+
+:root {
+  color: #111827;
+  background-color: #f3f4f6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f3f4f6;
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+}

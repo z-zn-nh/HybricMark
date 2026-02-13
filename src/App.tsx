@@ -1,35 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { HybricEditor } from "./lib";
+import type { Editor } from "@tiptap/core";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [json, setJson] = useState<unknown>(null);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <main style={{ maxWidth: 900, margin: "40px auto", padding: "0 16px" }}>
+      <HybricEditor
+        content="<p></p>"
+        editable
+        onChange={(editor: Editor) => setJson(editor.getJSON())}
+      />
+      <pre style={{ marginTop: 24, fontSize: 12 }}>
+        {JSON.stringify(json, null, 2)}
+      </pre>
+    </main>
+  );
 }
 
-export default App
+export default App;
