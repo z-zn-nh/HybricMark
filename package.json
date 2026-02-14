@@ -1,7 +1,7 @@
 {
   "name": "hybricmark",
   "private": false,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A headless, Typora-like Markdown editor for React, built on Tiptap.",
   "license": "MIT",
   "keywords": [
@@ -24,18 +24,15 @@
   "type": "module",
   "main": "./dist/hybricmark.umd.js",
   "module": "./dist/hybricmark.es.js",
-  "types": "./dist/hybricmark.es.d.ts",
+  "types": "./dist/index.d.ts",
   "files": [
-    "dist/hybricmark.css",
-    "dist/hybricmark.es.d.ts",
-    "dist/hybricmark.es.js",
-    "dist/hybricmark.umd.js",
+    "dist",
     "README.md",
     "LICENSE"
   ],
   "exports": {
     ".": {
-      "types": "./dist/hybricmark.es.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/hybricmark.es.js",
       "require": "./dist/hybricmark.umd.js"
     },
@@ -49,10 +46,11 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build && tsc -p tsconfig.lib.json",
     "lint": "eslint .",
     "preview": "vite preview",
-    "prepublishOnly": "npm run lint && npm run build"
+    "prepublishOnly": "npm run lint && npm run build",
+    "vercel-build": "node scripts/vercel-docs-build.mjs"
   },
   "dependencies": {
     "@radix-ui/react-context-menu": "^2.2.16",
@@ -113,8 +111,7 @@
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
-    "vite": "^8.0.0-beta.13",
-    "vite-plugin-dts": "^4.5.4"
+    "vite": "^8.0.0-beta.13"
   },
   "overrides": {
     "vite": "^8.0.0-beta.13"

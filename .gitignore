@@ -30,6 +30,7 @@ playwright-report/
 www/.next/
 www/out/
 www/node_modules/
+.vercel_static/
 
 # local caches
 .cache/

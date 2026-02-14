@@ -9,6 +9,8 @@
     "vercel-build": "npm run build && node scripts/prepare-vercel-output.mjs"
   },
   "dependencies": {
+    "@hybricmark/core": "npm:hybricmark@0.1.1",
+    "lucide-react": "^0.563.0",
     "next": "14.2.18",
     "nextra": "3.2.3",
     "nextra-theme-docs": "3.2.3",
