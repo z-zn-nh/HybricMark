@@ -1,5 +1,4 @@
 const meta = {
-  index: 'Home',
   docs: 'Docs',
   playground: 'Playground'
 }
