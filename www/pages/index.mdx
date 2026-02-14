@@ -1,33 +1,10 @@
-# The Hybrid Markdown Editor for React
+---
+title: HybricMark
+layout: raw
+---
 
-Typora-like editing experience. Headless. Block-based IDs.
+import { Hero } from '../components/landing/Hero'
+import { Features } from '../components/landing/Features'
 
-<div style={{ display: 'flex', gap: '12px', marginTop: '16px', marginBottom: '16px' }}>
-  <a href="/docs" style={{ padding: '10px 14px', border: '1px solid #111', borderRadius: 8, fontWeight: 600 }}>
-    Get Started
-  </a>
-  <a href="/playground" style={{ padding: '10px 14px', border: '1px solid #d4d4d8', borderRadius: 8 }}>
-    Try Playground
-  </a>
-</div>
-
-```bash
-npm install hybricmark
-```
-
-## Why HybricMark
-
-<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-  <div style={{ border: '1px solid #e4e4e7', borderRadius: 10, padding: 14 }}>
-    <h3 style={{ marginTop: 0 }}>Block Identities</h3>
-    <p style={{ marginBottom: 0 }}>Every paragraph has a unique ID. Perfect for block-based apps.</p>
-  </div>
-  <div style={{ border: '1px solid #e4e4e7', borderRadius: 10, padding: 14 }}>
-    <h3 style={{ marginTop: 0 }}>Typora Interaction</h3>
-    <p style={{ marginBottom: 0 }}>No raw Markdown visible. Right-click to format. Clean and focused.</p>
-  </div>
-  <div style={{ border: '1px solid #e4e4e7', borderRadius: 10, padding: 14 }}>
-    <h3 style={{ marginTop: 0 }}>Headless & Extensible</h3>
-    <p style={{ marginBottom: 0 }}>Built on Tiptap. Fully customizable styling via Tailwind.</p>
-  </div>
-</div>
+<Hero />
+<Features />
