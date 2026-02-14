@@ -6,7 +6,7 @@ const config: DocsThemeConfig = {
     link: 'https://github.com/your-username/hybricmark'
   },
   footer: {
-    text: 'MIT License (c) 2024 HybricMark'
+    content: 'MIT License (c) 2024 HybricMark'
   },
   head: () => (
     <>

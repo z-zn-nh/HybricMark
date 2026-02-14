@@ -1,0 +1,13 @@
+:root {
+  --hm-docs-bg: #ffffff;
+}
+
+html,
+body,
+#__next {
+  min-height: 100%;
+}
+
+body {
+  background: var(--hm-docs-bg);
+}
