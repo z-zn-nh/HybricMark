@@ -15,7 +15,13 @@ import UniqueID from "@tiptap/extension-unique-id";
 import StarterKit from "@tiptap/starter-kit";
 import { Extension } from "@tiptap/core";
 import { Fragment, type Node as ProseMirrorNode } from "@tiptap/pm/model";
-import { Plugin, PluginKey, TextSelection } from "@tiptap/pm/state";
+import {
+  Plugin,
+  PluginKey,
+  TextSelection,
+  type EditorState,
+  type Transaction,
+} from "@tiptap/pm/state";
 import { CellSelection, TableMap } from "@tiptap/pm/tables";
 import { Decoration, DecorationSet, type EditorView } from "@tiptap/pm/view";
 import { EditorContent, useEditor } from "@tiptap/react";
@@ -33,7 +39,7 @@ import markdownItSup from "markdown-it-sup";
 import markdownItTaskLists from "markdown-it-task-lists";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import type { Content, Editor } from "@tiptap/core";
+import type { Content, Editor, EditorOptions } from "@tiptap/core";
 
 import {
   EditorContextMenu,
@@ -1175,7 +1181,13 @@ const FootnoteSyntaxBehavior = Extension.create({
 export interface HybricEditorProps {
   content?: Content;
   onChange?: (editor: Editor) => void;
+  onUpdate?: (payload: { editor: Editor; transaction: Transaction }) => void;
+  onDebouncedUpdate?: (payload: { editor: Editor; transaction: Transaction }) => void;
   onExtract?: (data: ExtractCardData) => void;
+  extensions?: Extension[];
+  editorProps?: EditorOptions["editorProps"];
+  placeholder?: string;
+  debounceMs?: number;
   editable?: boolean;
   className?: string;
 }
@@ -1183,11 +1195,20 @@ export interface HybricEditorProps {
 const HybricEditorComponent = ({
   content,
   onChange,
+  onUpdate,
+  onDebouncedUpdate,
   onExtract,
+  extensions: customExtensions,
+  editorProps: customEditorProps,
+  placeholder = "Type '/' for commands...",
+  debounceMs = 400,
   editable = true,
   className,
 }: HybricEditorProps) => {
   const onChangeRef = useRef(onChange);
+  const onUpdateRef = useRef(onUpdate);
+  const onDebouncedUpdateRef = useRef(onDebouncedUpdate);
+  const debouncedUpdateTimerRef = useRef<number | null>(null);
   const [initialContent] = useState<Content | undefined>(() => normalizeIncomingContent(content));
   const lastExternalContentSignatureRef = useRef("");
   const [tableTooltip, setTableTooltip] = useState<TableTooltipState>({
@@ -1212,7 +1233,19 @@ const HybricEditorComponent = ({
   }, [onChange]);
 
   useEffect(() => {
+    onUpdateRef.current = onUpdate;
+  }, [onUpdate]);
+
+  useEffect(() => {
+    onDebouncedUpdateRef.current = onDebouncedUpdate;
+  }, [onDebouncedUpdate]);
+
+  useEffect(() => {
     return () => {
+      if (debouncedUpdateTimerRef.current !== null) {
+        window.clearTimeout(debouncedUpdateTimerRef.current);
+        debouncedUpdateTimerRef.current = null;
+      }
       if (linkHoverTimerRef.current !== null) {
         window.clearTimeout(linkHoverTimerRef.current);
         linkHoverTimerRef.current = null;
@@ -1220,7 +1253,7 @@ const HybricEditorComponent = ({
     };
   }, []);
 
-  const extensions = useMemo(
+  const baseExtensions = useMemo(
     () => [
       StarterKit.configure({
         link: false,
@@ -1262,122 +1295,135 @@ const HybricEditorComponent = ({
         generateID: () => createUuid(),
       }),
       Placeholder.configure({
-        placeholder: "Type '/' for commands...",
+        placeholder,
       }),
       KeyboardBehavior,
       HeadingHintBehavior,
       MarkdownPasteBehavior,
       FootnoteSyntaxBehavior,
     ],
-    [],
+    [placeholder],
   );
 
-  const editor = useEditor({
-    extensions,
-    content: initialContent,
-    editable,
-    immediatelyRender: false,
-    onCreate: ({ editor: currentEditor }) => {
-      migrateMathStrings(currentEditor);
-    },
-    editorProps: {
-      attributes: {
-        class: "hm-editor-content",
-      },
-      handleClick: (_view, _pos, event) => {
+  const mergedExtensions = useMemo(
+    () => [...baseExtensions, ...(customExtensions ?? [])],
+    [baseExtensions, customExtensions],
+  );
+
+  const mergedEditorProps = useMemo<EditorOptions["editorProps"]>(() => {
+    const customAttributes = customEditorProps?.attributes;
+    const attributes =
+      typeof customAttributes === "function"
+        ? (state: EditorState) => {
+            const resolvedAttributes = customAttributes(state) ?? {};
+            const resolvedClass =
+              typeof resolvedAttributes.class === "string"
+                ? resolvedAttributes.class
+                : undefined;
+            return {
+              ...resolvedAttributes,
+              class: twMerge("hm-editor-content", resolvedClass),
+            };
+          }
+        : {
+            ...(customAttributes ?? {}),
+            class: twMerge(
+              "hm-editor-content",
+              typeof customAttributes?.class === "string"
+                ? customAttributes.class
+                : undefined,
+            ),
+          };
+
+    return {
+      ...customEditorProps,
+      attributes,
+      handleClick: (view, pos, event) => {
         const mouseEvent = event as MouseEvent;
         const target = mouseEvent.target;
-        if (!(target instanceof Element)) {
-          return false;
-        }
+        if (target instanceof Element) {
+          const anchor = target.closest("a");
+          const href = anchor?.getAttribute("href");
 
-        const anchor = target.closest("a");
-        const href = anchor?.getAttribute("href");
+          if (href) {
+            mouseEvent.preventDefault();
 
-        if (!href) {
-          return false;
-        }
+            if (href.startsWith("#")) {
+              const id = href.slice(1);
+              const destination = document.getElementById(id);
+              if (destination) {
+                destination.scrollIntoView({ behavior: "smooth", block: "start" });
+                return true;
+              }
 
-        mouseEvent.preventDefault();
+              return false;
+            }
 
-        if (href.startsWith("#")) {
-          const id = href.slice(1);
-          const destination = document.getElementById(id);
-          if (destination) {
-            destination.scrollIntoView({ behavior: "smooth", block: "start" });
+            if (!isSafeUrl(href)) {
+              return true;
+            }
+
+            window.open(href, "_blank", "noopener,noreferrer");
             return true;
           }
-
-          return false;
         }
 
-        if (!isSafeUrl(href)) {
-          return true;
-        }
-
-        window.open(href, "_blank", "noopener,noreferrer");
-        return true;
+        return customEditorProps?.handleClick?.(view, pos, event) ?? false;
       },
       handleDOMEvents: {
+        ...(customEditorProps?.handleDOMEvents ?? {}),
         mouseover: (view, event) => {
           const target = event.target;
-          if (!(target instanceof Element)) {
-            return false;
-          }
+          if (target instanceof Element) {
+            const anchor = target.closest("a[href]");
+            if (anchor instanceof HTMLAnchorElement) {
+              const href = anchor.getAttribute("href") ?? "";
+              if (href) {
+                if (linkHoverTimerRef.current !== null) {
+                  window.clearTimeout(linkHoverTimerRef.current);
+                  linkHoverTimerRef.current = null;
+                }
 
-          const anchor = target.closest("a[href]");
-          if (!(anchor instanceof HTMLAnchorElement)) {
-            return false;
-          }
-
-          const href = anchor.getAttribute("href") ?? "";
-          if (!href) {
-            return false;
-          }
-
-          if (linkHoverTimerRef.current !== null) {
-            window.clearTimeout(linkHoverTimerRef.current);
-            linkHoverTimerRef.current = null;
-          }
-
-          linkHoverTimerRef.current = window.setTimeout(() => {
-            const root = view.dom.closest(".hm-editor-root");
-            if (!(root instanceof HTMLElement)) {
-              return;
+                linkHoverTimerRef.current = window.setTimeout(() => {
+                  const root = view.dom.closest(".hm-editor-root");
+                  if (!(root instanceof HTMLElement)) {
+                    return;
+                  }
+                  const rootRect = root.getBoundingClientRect();
+                  const anchorRect = anchor.getBoundingClientRect();
+                  setLinkHoverTooltip({
+                    visible: true,
+                    href,
+                    left: anchorRect.left - rootRect.left,
+                    top: anchorRect.bottom - rootRect.top + 8,
+                  });
+                  linkHoverTimerRef.current = null;
+                }, 500);
+              }
             }
-            const rootRect = root.getBoundingClientRect();
-            const anchorRect = anchor.getBoundingClientRect();
-            setLinkHoverTooltip({
-              visible: true,
-              href,
-              left: anchorRect.left - rootRect.left,
-              top: anchorRect.bottom - rootRect.top + 8,
-            });
-            linkHoverTimerRef.current = null;
-          }, 500);
+          }
 
-          return false;
+          return customEditorProps?.handleDOMEvents?.mouseover?.(view, event) ?? false;
         },
-        mouseout: (_view, event) => {
+        mouseout: (view, event) => {
           const target = event.target;
-          if (!(target instanceof Element)) {
-            return false;
+          if (target instanceof Element) {
+            if (linkHoverTimerRef.current !== null) {
+              window.clearTimeout(linkHoverTimerRef.current);
+              linkHoverTimerRef.current = null;
+            }
+
+            const anchor = target.closest("a[href]");
+            if (anchor) {
+              setLinkHoverTooltip((prev) =>
+                prev.visible ? { ...prev, visible: false } : prev,
+              );
+            }
           }
 
-          if (linkHoverTimerRef.current !== null) {
-            window.clearTimeout(linkHoverTimerRef.current);
-            linkHoverTimerRef.current = null;
-          }
-
-          const anchor = target.closest("a[href]");
-          if (anchor) {
-            setLinkHoverTooltip((prev) =>
-              prev.visible ? { ...prev, visible: false } : prev,
-            );
-          }
-          return false;
+          return customEditorProps?.handleDOMEvents?.mouseout?.(view, event) ?? false;
         },
-        mousedown: () => {
+        mousedown: (view, event) => {
           if (linkHoverTimerRef.current !== null) {
             window.clearTimeout(linkHoverTimerRef.current);
             linkHoverTimerRef.current = null;
@@ -1385,10 +1431,22 @@ const HybricEditorComponent = ({
           setLinkHoverTooltip((prev) =>
             prev.visible ? { ...prev, visible: false } : prev,
           );
-          return false;
+
+          return customEditorProps?.handleDOMEvents?.mousedown?.(view, event) ?? false;
         },
       },
+    };
+  }, [customEditorProps]);
+
+  const editor = useEditor({
+    extensions: mergedExtensions,
+    content: initialContent,
+    editable,
+    immediatelyRender: false,
+    onCreate: ({ editor: currentEditor }) => {
+      migrateMathStrings(currentEditor);
     },
+    editorProps: mergedEditorProps,
   });
 
   useEffect(() => {
@@ -1713,19 +1771,39 @@ const HybricEditorComponent = ({
       return;
     }
 
-    const handleUpdate = () => {
+    const handleUpdate = ({ editor: currentEditor, transaction }: { editor: Editor; transaction: Transaction }) => {
       // Note: This editor is uncontrolled. Do not force-update 'content' prop on every keystroke to avoid breaking Chinese IME.
-      console.log("[HybricEditor] doc:", editor.getJSON());
-      onChangeRef.current?.(editor);
+      console.log("[HybricEditor] doc:", currentEditor.getJSON());
+      onChangeRef.current?.(currentEditor);
+      onUpdateRef.current?.({ editor: currentEditor, transaction });
+
+      if (onDebouncedUpdateRef.current) {
+        if (debouncedUpdateTimerRef.current !== null) {
+          window.clearTimeout(debouncedUpdateTimerRef.current);
+        }
+        debouncedUpdateTimerRef.current = window.setTimeout(() => {
+          if (!onDebouncedUpdateRef.current) {
+            return;
+          }
+          onDebouncedUpdateRef.current({
+            editor: currentEditor,
+            transaction,
+          });
+        }, Math.max(0, debounceMs));
+      }
     };
 
-    handleUpdate();
+    onChangeRef.current?.(editor);
     editor.on("update", handleUpdate);
 
     return () => {
       editor.off("update", handleUpdate);
+      if (debouncedUpdateTimerRef.current !== null) {
+        window.clearTimeout(debouncedUpdateTimerRef.current);
+        debouncedUpdateTimerRef.current = null;
+      }
     };
-  }, [editor]);
+  }, [debounceMs, editor]);
 
   useEffect(() => {
     if (!editor) {

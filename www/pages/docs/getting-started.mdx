@@ -1,6 +1,6 @@
 # Getting Started
 
-HybricMark is a headless Markdown editor for React built on Tiptap. It gives you a Typora-like writing flow with block IDs for app-level workflows.
+`hybricmark` 是基于 Tiptap 的 React 编辑器库：开箱即用，同时保留底层可扩展能力。
 
 ## Installation
 
@@ -8,23 +8,98 @@ HybricMark is a headless Markdown editor for React built on Tiptap. It gives you
 npm install hybricmark @tiptap/react @tiptap/starter-kit
 ```
 
-## Basic Usage
+## 1) Quick Start
 
 ```tsx
 import { useState } from 'react'
 import { HybricEditor } from 'hybricmark'
 
-export default function EditorDemo() {
-  const [json, setJson] = useState(null)
+export default function NoteEditor() {
+  const [latest, setLatest] = useState<unknown>(null)
 
   return (
     <HybricEditor
-      content="# Hello HybricMark\n\nStart writing..."
-      onChange={(editor) => setJson(editor.getJSON())}
-      onExtract={(data) => {
-        console.log('Extracted:', data.id, data.content)
+      content="# Hello HybricMark\n\nType here..."
+      placeholder="输入 '/' 触发命令"
+      onUpdate={({ editor }) => {
+        setLatest(editor.getJSON())
+      }}
+      onExtract={({ id, text }) => {
+        console.log('Extracted block:', id, text)
       }}
     />
   )
 }
 ```
+
+## 2) Use Debounced Save (Recommended)
+
+高频输入时，建议用 `onDebouncedUpdate` 做持久化，避免每个 transaction 都写库。
+
+```tsx
+<HybricEditor
+  content={initialDoc}
+  debounceMs={800}
+  onDebouncedUpdate={({ editor }) => {
+    void fetch('/api/docs/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editor.getJSON()),
+    })
+  }}
+/>
+```
+
+## 3) Inject Custom Extensions
+
+```tsx
+import CharacterCount from '@tiptap/extension-character-count'
+
+<HybricEditor
+  content={initialDoc}
+  extensions={[
+    CharacterCount.configure({ limit: 20000 }),
+  ]}
+/>
+```
+
+## 4) Override Native Editor Behavior
+
+通过 `editorProps` 接入 ProseMirror 原生事件（如快捷键拦截）：
+
+```tsx
+<HybricEditor
+  editorProps={{
+    handleKeyDown: (_view, event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault()
+        console.log('save shortcut')
+        return true
+      }
+      return false
+    },
+  }}
+/>
+```
+
+## 5) Data Model: Block IDs
+
+HybricMark 会为块级节点注入唯一 ID，便于块级引用、增量同步与评论锚点。
+
+```json
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "attrs": { "id": "7f652fb0-0815-4f41-9efb-b67fe7b18390" },
+      "content": [{ "type": "text", "text": "hello" }]
+    }
+  ]
+}
+```
+
+## Next
+
+- 查看完整 API：[`/docs/api`](/docs/api)
+- 体验在线示例：[`/playground`](/playground)
