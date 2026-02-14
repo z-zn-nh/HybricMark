@@ -1,0 +1,30 @@
+# Getting Started
+
+HybricMark is a headless Markdown editor for React built on Tiptap. It gives you a Typora-like writing flow with block IDs for app-level workflows.
+
+## Installation
+
+```bash
+npm install hybricmark @tiptap/react @tiptap/starter-kit
+```
+
+## Basic Usage
+
+```tsx
+import { useState } from 'react'
+import { HybricEditor } from 'hybricmark'
+
+export default function EditorDemo() {
+  const [json, setJson] = useState(null)
+
+  return (
+    <HybricEditor
+      content="# Hello HybricMark\n\nStart writing..."
+      onChange={(editor) => setJson(editor.getJSON())}
+      onExtract={(data) => {
+        console.log('Extracted:', data.id, data.content)
+      }}
+    />
+  )
+}
+```
