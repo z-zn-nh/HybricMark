@@ -1,128 +1,96 @@
 # API Reference
 
-`hybricmark` 提供一个开箱即用但可深度扩展的组件：`<HybricEditor />`。  
-下面只列“当前代码里真实可用”的接口。
+`HybricEditor` is the main entry point of `hybricmark`.
+It is built on top of Tiptap, with block IDs and Typora-like interactions enabled by default.
 
 ## `<HybricEditor />` Props
 
-| Prop | Type | Default | 说明 |
+| Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `content` | `Content` | `undefined` | 初始化内容。支持字符串（Markdown/HTML 输入）或 Tiptap JSON。 |
-| `editable` | `boolean` | `true` | 是否可编辑。 |
-| `className` | `string` | `undefined` | 编辑器外层容器 class。 |
-| `placeholder` | `string` | `"Type '/' for commands..."` | 空文档占位提示。 |
-| `extensions` | `Extension[]` | `[]` | 追加自定义 Tiptap 扩展（会和内置扩展合并）。 |
-| `editorProps` | `EditorOptions['editorProps']` | `undefined` | 透传 ProseMirror/Tiptap 原生 `editorProps`（如 `handleKeyDown`/`handlePaste`）。 |
-| `onChange` | `(editor) => void` | `undefined` | 兼容回调：每次更新后返回 `editor`。 |
-| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | 每次事务更新回调，适合实时状态联动。 |
-| `onDebouncedUpdate` | `({ editor, transaction }) => void` | `undefined` | 防抖更新回调，适合写数据库。 |
-| `debounceMs` | `number` | `400` | `onDebouncedUpdate` 防抖时长（毫秒）。 |
-| `onExtract` | `(data) => void` | `undefined` | 右键“摘录到卡片”触发，返回块级数据。 |
+| `content` | `string \| JSON` | `undefined` | Initial content. Supports Markdown/HTML string input or a Tiptap JSON document tree. |
+| `editable` | `boolean` | `true` | Enables or disables editing mode. |
+| `placeholder` | `string` | `"Type '/' for commands..."` | Placeholder text for empty documents. |
+| `className` | `string` | `undefined` | Custom classes for the editor root wrapper. |
+| `extensions` | `Extension[]` | `[]` | Additional Tiptap extensions merged into HybricMark defaults. |
+| `editorProps` | `EditorProps` | `undefined` | Native ProseMirror/Tiptap editor props (e.g. `handleKeyDown`, `handlePaste`). |
+| `onChange` | `(editor: Editor) => void` | `undefined` | Compatibility callback. Fires on update and returns the editor instance. |
+| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | Fires on each editor transaction. Useful for immediate UI sync. |
+| `onDebouncedUpdate` | `(editor: Editor) => void` | `undefined` | Recommended for database persistence to avoid high-frequency writes. Internally receives `{ editor, transaction }`; use `editor` in save logic. |
+| `debounceMs` | `number` | `400` | Debounce interval used by `onDebouncedUpdate`. |
+| `onExtract` | `(data) => void` | `undefined` | Triggered by "Extract to Card" actions in context menu. |
 
-> 提示：`HybricEditor` 是 **uncontrolled editor**。不要在每次 `onUpdate` 后把 `content` 强制回灌，否则会影响中文输入法（IME）体验。
+> **Why `onDebouncedUpdate` matters**  
+> Saving on every keystroke can flood your API and increase contention on collaborative/stateful backends. Debounced saving is safer and cheaper.
 
-## 快速使用
+## Editor Instance Methods
 
-```tsx
-import { HybricEditor } from 'hybricmark'
-
-export function Demo() {
-  return (
-    <HybricEditor
-      content="# Hello HybricMark"
-      placeholder="开始输入..."
-      onUpdate={({ editor, transaction }) => {
-        if (transaction.docChanged) {
-          console.log(editor.getJSON())
-        }
-      }}
-      onDebouncedUpdate={({ editor }) => {
-        // 典型：防抖持久化
-        void fetch('/api/save', {
-          method: 'POST',
-          body: JSON.stringify(editor.getJSON()),
-        })
-      }}
-      onExtract={({ id, content, text }) => {
-        console.log('extract', id, text, content)
-      }}
-    />
-  )
-}
-```
-
-## Editor 实例常用方法
+The callback gives you full access to the Tiptap `editor` instance.
 
 ```ts
+// Command chaining
 editor.chain().focus().toggleBold().run()
+
+// Read current state
 editor.getJSON()
 editor.getHTML()
+
+// Programmatic actions
+editor.commands.clearContent()
+editor.commands.focus()
 ```
 
-## Block ID 数据结构
+## Data Structure: Unique Block IDs
 
-每个块（如 `heading`、`paragraph`、列表、`blockquote`、`codeBlock`）都会有 `attrs.id`：
+Every block node carries an `attrs.id`, enabling block-level references and granular persistence.
 
 ```json
 {
   "type": "doc",
   "content": [
     {
-      "type": "heading",
-      "attrs": { "id": "b1a2-3c4d", "level": 1 },
-      "content": [{ "type": "text", "text": "Hello World" }]
+      "type": "paragraph",
+      "attrs": {
+        "id": "uuid-1234"
+      },
+      "content": [
+        { "type": "text", "text": "Hello HybricMark" }
+      ]
     },
     {
-      "type": "paragraph",
-      "attrs": { "id": "e5f6-7g8h" },
-      "content": [{ "type": "text", "text": "This paragraph has UUID too." }]
+      "type": "heading",
+      "attrs": {
+        "id": "uuid-5678",
+        "level": 2
+      },
+      "content": [
+        { "type": "text", "text": "Block-level updates" }
+      ]
     }
   ]
 }
 ```
 
-这让你可以做：
-- 块级锚点引用
-- 增量同步（只更新变更块）
-- 评论/批注精确挂载到 block
+> **Block IDs vs plain Markdown**  
+> Traditional Markdown is line/text-oriented; it does not guarantee stable block identity.  
+> HybricMark's UUID-backed blocks let you do Notion-style features: block comments, per-block sync, and targeted update patches.
 
-## 如何“改东西”：扩展与底层事件
-
-### 1) 注入扩展
+## Practical Extension Setup
 
 ```tsx
 import CharacterCount from '@tiptap/extension-character-count'
+import { HybricEditor } from 'hybricmark'
 
 <HybricEditor
-  content="hello"
-  extensions={[CharacterCount.configure({ limit: 20000 })]}
-/>
-```
-
-### 2) 覆盖键盘行为（`editorProps`）
-
-```tsx
-<HybricEditor
+  content="# Title"
+  extensions={[CharacterCount.configure({ limit: 10000 })]}
   editorProps={{
     handleKeyDown: (_view, event) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
         event.preventDefault()
-        console.log('save shortcut')
         return true
       }
       return false
     },
-  }}
-/>
-```
-
-### 3) 防抖保存（推荐）
-
-```tsx
-<HybricEditor
-  debounceMs={800}
-  onDebouncedUpdate={({ editor }) => {
-    localStorage.setItem('doc', JSON.stringify(editor.getJSON()))
   }}
 />
 ```

@@ -1,0 +1,47 @@
+# Saving to Database
+
+Saving editor data on every keystroke is usually a bad idea.
+
+Problems you will hit quickly:
+- Too many API requests.
+- Higher server/database write pressure.
+- Race conditions between slow/fast responses.
+
+Use `onDebouncedUpdate` instead.
+
+## Recommended Pattern
+
+```tsx
+import { HybricEditor } from 'hybricmark'
+
+async function saveToAPI(json: unknown) {
+  const res = await fetch('/api/docs/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ document: json }),
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to save document')
+  }
+}
+
+export function DocumentEditor() {
+  return (
+    <HybricEditor
+      content="# Draft"
+      debounceMs={800}
+      onDebouncedUpdate={({ editor }) => {
+        const json = editor.getJSON()
+        void saveToAPI(json)
+      }}
+    />
+  )
+}
+```
+
+## Notes
+
+- Keep `debounceMs` between `500-1200ms` for most apps.
+- Use `editor.getJSON()` for structured persistence.
+- If your backend stores HTML too, also persist `editor.getHTML()`.
