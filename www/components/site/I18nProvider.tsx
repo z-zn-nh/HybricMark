@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 type Language = 'en' | 'zh'
 
@@ -111,20 +112,23 @@ function patchNextraUi(language: Language) {
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('en')
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window === 'undefined') {
+      return 'en'
+    }
+
+    const stored = window.localStorage.getItem(STORAGE_KEY)
+    return stored === 'zh' || stored === 'en' ? stored : 'en'
+  })
 
   useEffect(() => {
     if (typeof window === 'undefined') {
       return
     }
 
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    const initialLanguage: Language = stored === 'zh' || stored === 'en' ? stored : 'en'
-
-    setLanguageState(initialLanguage)
-    document.documentElement.setAttribute('lang', initialLanguage === 'zh' ? 'zh-CN' : 'en')
-    document.documentElement.setAttribute('data-doc-lang', initialLanguage)
-    patchNextraUi(initialLanguage)
+    document.documentElement.setAttribute('lang', language === 'zh' ? 'zh-CN' : 'en')
+    document.documentElement.setAttribute('data-doc-lang', language)
+    patchNextraUi(language)
 
     const handleExternalLanguageChange = (event: Event) => {
       const next = (event as CustomEvent<Language>).detail
@@ -153,9 +157,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('hm-language-change', handleExternalLanguageChange as EventListener)
       observer.disconnect()
     }
-  }, [])
+  }, [language])
 
-  const setLanguage = (lang: Language) => {
+  const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang)
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(STORAGE_KEY, lang)
@@ -164,11 +168,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       patchNextraUi(lang)
       window.dispatchEvent(new CustomEvent('hm-language-change', { detail: lang }))
     }
-  }
+  }, [])
 
-  const toggleLanguage = () => {
+  const toggleLanguage = useCallback(() => {
     setLanguage(language === 'en' ? 'zh' : 'en')
-  }
+  }, [language, setLanguage])
 
   const value = useMemo<I18nContextValue>(
     () => ({
@@ -177,7 +181,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       toggleLanguage,
       t: (en, zh) => (language === 'zh' ? zh : en),
     }),
-    [language],
+    [language, setLanguage, toggleLanguage],
   )
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>

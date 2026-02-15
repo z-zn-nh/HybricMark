@@ -1,8 +1,33 @@
-ï»¿import { Github, Languages, Moon, Sun } from 'lucide-react'
+import { Github, Languages, Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 type Theme = 'light' | 'dark'
 type Language = 'en' | 'zh'
+
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') {
+    return 'light'
+  }
+
+  const storedTheme = window.localStorage.getItem('theme')
+  if (storedTheme === 'dark' || storedTheme === 'light') {
+    return storedTheme
+  }
+
+  const preferDark =
+    typeof window.matchMedia === 'function' &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  return preferDark ? 'dark' : 'light'
+}
+
+function getInitialLanguage(): Language {
+  if (typeof window === 'undefined') {
+    return 'en'
+  }
+
+  const storedLang = window.localStorage.getItem('hybricmark-doc-lang')
+  return storedLang === 'zh' || storedLang === 'en' ? storedLang : 'en'
+}
 
 function applyTheme(theme: Theme) {
   const root = document.documentElement
@@ -20,45 +45,26 @@ function applyLanguage(language: Language) {
 }
 
 export function TopRightControls() {
-  const [theme, setTheme] = useState<Theme>('light')
-  const [language, setLanguage] = useState<Language>('en')
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
+  const [language, setLanguage] = useState<Language>(getInitialLanguage)
   const nextLanguage: Language = language === 'en' ? 'zh' : 'en'
 
   useEffect(() => {
     if (typeof window === 'undefined') return
+    applyTheme(theme)
+  }, [theme])
 
-    const storedTheme = window.localStorage.getItem('theme')
-    if (storedTheme === 'dark' || storedTheme === 'light') {
-      setTheme(storedTheme)
-      applyTheme(storedTheme)
-    } else {
-      const preferDark =
-        typeof window.matchMedia === 'function' &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches
-      const nextTheme = preferDark ? 'dark' : 'light'
-      setTheme(nextTheme)
-      applyTheme(nextTheme)
-    }
-
-    const storedLang = window.localStorage.getItem('hybricmark-doc-lang')
-    if (storedLang === 'zh' || storedLang === 'en') {
-      setLanguage(storedLang)
-      applyLanguage(storedLang)
-    } else {
-      applyLanguage('en')
-    }
-  }, [])
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    applyLanguage(language)
+  }, [language])
 
   const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    applyTheme(next)
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }
 
   const toggleLanguage = () => {
-    const next: Language = language === 'en' ? 'zh' : 'en'
-    setLanguage(next)
-    applyLanguage(next)
+    setLanguage((prev) => (prev === 'en' ? 'zh' : 'en'))
   }
 
   return (
@@ -86,10 +92,10 @@ export function TopRightControls() {
         type="button"
         className="hm-site-control-btn hm-site-control-lang"
         onClick={toggleLanguage}
-        title={nextLanguage === 'zh' ? 'åˆ‡æ¢åˆ°ä¸­æ–‡' : 'Switch to English'}
+        title={nextLanguage === 'zh' ? 'ÇÐ»»µ½ÖÐÎÄ' : 'Switch to English'}
       >
         <Languages size={16} />
-        <span>{nextLanguage === 'zh' ? 'ä¸­æ–‡' : 'EN'}</span>
+        <span>{nextLanguage === 'zh' ? 'ÖÐÎÄ' : 'EN'}</span>
       </button>
     </div>
   )
