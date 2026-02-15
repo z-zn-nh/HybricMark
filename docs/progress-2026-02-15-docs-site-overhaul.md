@@ -82,3 +82,8 @@ Validated on local docs server:
 ## Notes
 - Docs site demos now run against local source to avoid published package SSR/runtime incompatibility in current pipeline.
 - This keeps docs and implementation aligned while preserving Vercel build compatibility.
+
+## Hotfix: Vercel Root=www dependency resolution (2026-02-15)
+- Problem: with `Root Directory = www` and `externalDir` enabled, docs imports from `../src` resolved modules from workspace root (`/node_modules`) while install only provided `/www/node_modules`, causing errors like `Cannot find module '@radix-ui/react-context-menu'`.
+- Fix: `www/scripts/prebuild-clean.mjs` now creates a link from workspace root `node_modules` to `www/node_modules` when root node_modules is missing.
+- Result: `npm run vercel-build` succeeds in the current setup without changing locked Vercel UI build fields.
