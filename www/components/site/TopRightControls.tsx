@@ -22,6 +22,7 @@ function applyLanguage(language: Language) {
 export function TopRightControls() {
   const [theme, setTheme] = useState<Theme>('light')
   const [language, setLanguage] = useState<Language>('en')
+  const nextLanguage: Language = language === 'en' ? 'zh' : 'en'
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -85,10 +86,10 @@ export function TopRightControls() {
         type="button"
         className="hm-site-control-btn hm-site-control-lang"
         onClick={toggleLanguage}
-        title={language === 'zh' ? 'Switch to English' : '切换到中文'}
+        title={nextLanguage === 'zh' ? '切换到中文' : 'Switch to English'}
       >
         <Languages size={16} />
-        <span>{language === 'zh' ? '中文' : 'EN'}</span>
+        <span>{nextLanguage === 'zh' ? '中文' : 'EN'}</span>
       </button>
     </div>
   )
