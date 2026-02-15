@@ -1,0 +1,47 @@
+import { I18nText } from '../../../components/site/I18nProvider'
+
+# <I18nText en="Headless Design" zh="无头设计" />
+
+<I18nText
+  en="HybricMark is intentionally headless-first: behavior and data model are provided by the library, while visual system and brand style remain in your app."
+  zh="HybricMark 采用无头优先：库负责行为与数据模型，视觉系统和品牌样式由你的应用掌控。"
+/>
+
+## <I18nText en="Why not ship heavy default CSS" zh="为什么不内置重样式" />
+
+- <I18nText en="Avoid style conflicts in existing design systems." zh="避免与既有设计系统冲突。" />
+- <I18nText en="Keep teams free to implement Typora-like, Notion-like, or product-specific UX." zh="让团队可以自由实现 Typora 风格、Notion 风格或业务专属体验。" />
+- <I18nText en="Reduce migration cost for enterprise apps with strict design tokens." zh="降低企业场景下接入设计令牌体系的迁移成本。" />
+
+## <I18nText en="Typical integration" zh="典型接入方式" />
+
+```tsx
+<HybricEditor
+  content={doc}
+  className="my-editor-shell"
+  editorProps={{
+    attributes: {
+      class: 'prose max-w-none leading-7'
+    }
+  }}
+/>
+```
+
+```css
+.my-editor-shell .hm-editor-content h1 {
+  font-size: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.my-editor-shell .hm-editor-content code {
+  background: #f3f4f6;
+  border-radius: 4px;
+  padding: 0.15rem 0.35rem;
+}
+```
+
+## <I18nText en="Best practices" zh="最佳实践" />
+
+- <I18nText en="Keep typography rules scoped to editor root class." zh="排版规则始终限定在编辑器根类名下。" />
+- <I18nText en="Treat commands/state as behavior layer, and keep visuals in CSS/Tailwind." zh="把命令/状态视为行为层，把视觉放在 CSS/Tailwind 层。" />
+- <I18nText en="Validate dark mode contrast for selection, links, and table states." zh="重点验证暗色模式下选中态、链接和表格状态的可读性。" />

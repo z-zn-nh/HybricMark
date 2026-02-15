@@ -23,6 +23,42 @@ const MySlashExtension: Extension = /* your extension */
 />
 ```
 
+## <I18nText en="Recipe: add `Insert YouTube` command" zh="实战：新增“插入 YouTube”命令" />
+
+```tsx
+import type { Editor } from '@tiptap/core'
+
+function insertYouTube(editor: Editor, url: string) {
+  const embed = `https://www.youtube.com/embed/${extractVideoId(url)}`
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: 'paragraph',
+      content: [{ type: 'text', text: `YouTube: ${embed}` }],
+    })
+    .run()
+}
+
+function insertWarningBox(editor: Editor) {
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: 'blockquote',
+      content: [
+        {
+          type: 'paragraph',
+          content: [{ type: 'text', text: 'Warning: verify this step before publishing.' }],
+        },
+      ],
+    })
+    .run()
+}
+```
+
+<I18nText en="In practice, bind these commands into your slash command menu source and dispatch them from command handlers." zh="实践中，把这些命令注册到你的斜杠菜单数据源，在命令回调中触发即可。" />
+
 ## <I18nText en="Product-level recommendations" zh="产品级建议" />
 
 - <I18nText en="Group commands by intent (`format`, `insert`, `actions`)." zh="按意图分组命令（`format`、`insert`、`actions`）。" />

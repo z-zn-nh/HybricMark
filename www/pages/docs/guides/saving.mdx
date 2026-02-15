@@ -46,3 +46,12 @@ export function DocumentEditor({ initialDoc }: { initialDoc: unknown }) {
 - <I18nText en="Include `updatedAt` and revision/version fields in payload." zh="在 payload 中加入 `updatedAt` 与 revision/version 字段。" />
 - <I18nText en="Keep saves idempotent (`upsert` with revision checks)." zh="保存接口保持幂等（推荐 `upsert` + revision 校验）。" />
 - <I18nText en="Add retry logic for transient network failures." zh="为瞬时网络故障增加重试逻辑。" />
+
+## <I18nText en="HTML vs JSON storage" zh="HTML 与 JSON 存储对比" />
+
+| <I18nText en="Format" zh="格式" /> | <I18nText en="Pros" zh="优点" /> | <I18nText en="Cons" zh="缺点" /> | <I18nText en="Recommended use" zh="推荐场景" /> |
+| --- | --- | --- | --- |
+| HTML | <I18nText en="Easy direct rendering in web views." zh="直接渲染方便。" /> | <I18nText en="Weak block identity, hard to patch by block." zh="块级标识弱，难做局部 patch。" /> | <I18nText en="Read-only rendering/export snapshots." zh="只读展示、导出快照。" /> |
+| JSON | <I18nText en="Stable structure, preserves block IDs and semantic nodes." zh="结构稳定，保留块 ID 与语义节点。" /> | <I18nText en="Needs renderer/transformer for non-editor channels." zh="非编辑渠道需要转换渲染。" /> | <I18nText en="Primary database format for product features." zh="作为业务主存格式。" /> |
+
+> <I18nText en="For HybricMark products, persist JSON as source of truth, and derive HTML only when needed." zh="在 HybricMark 场景下，建议以 JSON 作为事实源，HTML 按需生成。" />
