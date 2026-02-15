@@ -1,28 +1,30 @@
-﻿# API Reference
+﻿import { I18nText } from '../../components/site/I18nProvider'
 
-`HybricEditor` is the main integration component.
+# <I18nText en="API Reference" zh="API 参考" />
 
-## `<HybricEditor />` Props
+<I18nText en="`HybricEditor` is the main integration component." zh="`HybricEditor` 是主集成组件。" />
 
-| Prop | Type | Default | Description |
+## <I18nText en="`<HybricEditor />` Props" zh="`<HybricEditor />` 属性" />
+
+| <I18nText en="Prop" zh="属性" /> | <I18nText en="Type" zh="类型" /> | <I18nText en="Default" zh="默认值" /> | <I18nText en="Description" zh="说明" /> |
 | --- | --- | --- | --- |
-| `content` | `string \| JSONContent` | `undefined` | Initial document input. Accepts Markdown/HTML string or Tiptap JSON. |
-| `editable` | `boolean` | `true` | Toggles editable mode. |
-| `placeholder` | `string` | `"Type '/' for commands..."` | Placeholder text for empty document. |
-| `className` | `string` | `undefined` | CSS class applied to editor root container. |
-| `extensions` | `Extension[]` | `[]` | Additional Tiptap extensions merged with built-in stack. |
-| `editorProps` | `EditorProps` | `undefined` | Native ProseMirror handlers (`handleKeyDown`, `handlePaste`, etc). |
-| `onChange` | `(editor: Editor) => void` | `undefined` | High-frequency callback on editor update. Useful for UI sync. |
-| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | Transaction-level callback for deep integration hooks. |
-| `onDebouncedUpdate` | `({ editor, transaction }) => void` | `undefined` | Debounced callback for persistence. Use this for DB writes. |
-| `debounceMs` | `number` | `400` | Delay for `onDebouncedUpdate` in milliseconds. |
-| `onExtract` | `(data: { id: string; content: JSON; text: string }) => void` | `undefined` | Fired from context action “Extract to Card”. |
+| `content` | `string \| JSONContent` | `undefined` | <I18nText en="Initial document input. Accepts Markdown/HTML string or Tiptap JSON." zh="初始文档输入，支持 Markdown/HTML 字符串或 Tiptap JSON。" /> |
+| `editable` | `boolean` | `true` | <I18nText en="Toggles editable mode." zh="切换可编辑状态。" /> |
+| `placeholder` | `string` | `"Type '/' for commands..."` | <I18nText en="Placeholder text for empty document." zh="空文档时的占位文本。" /> |
+| `className` | `string` | `undefined` | <I18nText en="CSS class applied to editor root container." zh="挂载在编辑器根容器上的类名。" /> |
+| `extensions` | `Extension[]` | `[]` | <I18nText en="Additional Tiptap extensions merged with built-in stack." zh="与内置扩展栈合并的自定义 Tiptap 扩展。" /> |
+| `editorProps` | `EditorProps` | `undefined` | <I18nText en="Native ProseMirror handlers (`handleKeyDown`, `handlePaste`, etc)." zh="原生 ProseMirror 处理器（`handleKeyDown`、`handlePaste` 等）。" /> |
+| `onChange` | `(editor: Editor) => void` | `undefined` | <I18nText en="High-frequency callback on editor update. Useful for UI sync." zh="高频更新回调，适合联动 UI。" /> |
+| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | <I18nText en="Transaction-level callback for deep integration hooks." zh="事务级回调，适合深度集成场景。" /> |
+| `onDebouncedUpdate` | `({ editor, transaction }) => void` | `undefined` | <I18nText en="Debounced callback for persistence. Use this for DB writes." zh="防抖更新回调，建议用于数据库持久化写入。" /> |
+| `debounceMs` | `number` | `400` | <I18nText en="Delay for `onDebouncedUpdate` in milliseconds." zh="`onDebouncedUpdate` 的防抖毫秒值。" /> |
+| `onExtract` | `(data: { id: string; content: JSON; text: string }) => void` | `undefined` | <I18nText en="Fired from context action “Extract to Card”." zh="来自右键菜单“摘录到卡片”动作的回调。" /> |
 
-> **Pro tip**: use `onDebouncedUpdate` for network/database persistence. Writing on each keystroke causes unnecessary load and race conditions.
+> <I18nText en="Pro tip: use `onDebouncedUpdate` for network/database persistence. Writing on each keystroke causes unnecessary load and race conditions." zh="提示：请用 `onDebouncedUpdate` 做网络/数据库持久化。每次按键都写库会带来不必要负载与竞态。" />
 
-## Editor instance methods
+## <I18nText en="Editor instance methods" zh="编辑器实例方法" />
 
-The callback gives access to the Tiptap editor instance.
+<I18nText en="Callbacks expose the Tiptap editor instance." zh="回调中可直接拿到 Tiptap editor 实例。" />
 
 ```ts
 editor.chain().focus().toggleBold().run()
@@ -32,9 +34,9 @@ editor.commands.clearContent()
 editor.commands.focus()
 ```
 
-## Data structure: block IDs
+## <I18nText en="Data structure: block IDs" zh="数据结构：块级 ID" />
 
-HybricMark attaches IDs to core block nodes for block-level workflows.
+<I18nText en="HybricMark attaches IDs to core block nodes for block-level workflows." zh="HybricMark 会为核心块节点附加 ID，支持块级工作流。" />
 
 ```json
 {
@@ -54,9 +56,9 @@ HybricMark attaches IDs to core block nodes for block-level workflows.
 }
 ```
 
-> **Why this matters**: block IDs enable granular updates, comments by block, and deterministic references for Notion-like product features.
+> <I18nText en="Why this matters: block IDs enable granular updates, comments by block, and deterministic references for Notion-like product features." zh="价值点：块级 ID 支持细粒度更新、按块评论和稳定引用，是 Notion 类产品的关键基础能力。" />
 
-## Extension composition
+## <I18nText en="Extension composition" zh="扩展组合" />
 
 ```tsx
 import CharacterCount from '@tiptap/extension-character-count'
@@ -76,10 +78,10 @@ import CharacterCount from '@tiptap/extension-character-count'
 />
 ```
 
-## Built-in default behavior
+## <I18nText en="Built-in default behavior" zh="内置默认行为" />
 
-- Typora-like context menu actions.
-- Markdown shortcut support for common blocks.
-- Link handling optimized for editing (`openOnClick: false` in editing flow).
-- Table tooling and inline helpers enabled.
-- Optional extraction callback for block-level business actions.
+- <I18nText en="Typora-like context menu actions." zh="Typora 风格上下文菜单。" />
+- <I18nText en="Markdown shortcut support for common blocks." zh="常见块的 Markdown 快捷输入支持。" />
+- <I18nText en="Link handling optimized for editing (`openOnClick: false` in editing flow)." zh="针对编辑体验优化的链接处理（编辑态 `openOnClick: false`）。" />
+- <I18nText en="Table tooling and inline helpers enabled." zh="表格工具与行内辅助能力默认可用。" />
+- <I18nText en="Optional extraction callback for block-level business actions." zh="提供可选摘录回调，支持块级业务动作。" />

@@ -1,8 +1,10 @@
-﻿# Next.js / SSR
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-Editor surfaces must run on the client.
+# <I18nText en="Next.js / SSR" zh="Next.js / SSR" />
 
-## Recommended pattern
+<I18nText en="Editor surfaces must run on the client." zh="编辑器渲染面必须在客户端运行。" />
+
+## <I18nText en="Recommended pattern" zh="推荐模式" />
 
 ```tsx
 'use client'
@@ -15,19 +17,19 @@ const HybricEditor = dynamic(
 )
 ```
 
-## IME and cursor stability
+## <I18nText en="IME and cursor stability" zh="IME 与光标稳定性" />
 
-Do not force-update `content` from parent state on every keypress.
+<I18nText en="Do not force-update `content` from parent state on every keypress." zh="不要在每次按键时从父状态强制回写 `content`。" />
 
-Use:
+<I18nText en="Use:" zh="正确做法：" />
 
-- `content` as initial value.
-- `onChange` for immediate UI.
-- `onDebouncedUpdate` for persistence.
+- <I18nText en="`content` as initial value." zh="`content` 仅作为初始值。" />
+- <I18nText en="`onChange` for immediate UI." zh="`onChange` 负责即时 UI 联动。" />
+- <I18nText en="`onDebouncedUpdate` for persistence." zh="`onDebouncedUpdate` 负责持久化写入。" />
 
-## Styling imports
+## <I18nText en="Styling imports" zh="样式导入" />
 
-In your app entry:
+<I18nText en="In your app entry:" zh="在应用入口导入：" />
 
 ```ts
 import 'hybricmark/style.css'

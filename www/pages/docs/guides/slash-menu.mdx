@@ -1,14 +1,16 @@
-﻿# Custom Slash Menu
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-HybricMark is context-first by default, but slash interactions can be extended through Tiptap extensions.
+# <I18nText en="Custom Slash Menu" zh="自定义斜杠菜单" />
 
-## Integration path
+<I18nText en="HybricMark is context-first by default, but slash interactions can be extended through Tiptap extensions." zh="HybricMark 默认是上下文优先交互，斜杠菜单能力可通过 Tiptap 扩展继续增强。" />
 
-- Implement a custom extension/plugin for slash command detection.
-- Pass it through `extensions`.
-- Keep command rendering state in your app layer when menu complexity grows.
+## <I18nText en="Integration path" zh="集成路径" />
 
-## Example shape
+- <I18nText en="Implement a custom extension/plugin for slash command detection." zh="实现自定义扩展/插件用于斜杠命令识别。" />
+- <I18nText en="Pass it through `extensions`." zh="通过 `extensions` 属性注入。" />
+- <I18nText en="Keep command rendering state in your app layer when menu complexity grows." zh="当菜单复杂度上升时，将命令渲染状态上提到业务层管理。" />
+
+## <I18nText en="Example shape" zh="结构示例" />
 
 ```tsx
 import type { Extension } from '@tiptap/core'
@@ -21,8 +23,8 @@ const MySlashExtension: Extension = /* your extension */
 />
 ```
 
-## Product-level recommendations
+## <I18nText en="Product-level recommendations" zh="产品级建议" />
 
-- Group commands by intent (`format`, `insert`, `actions`).
-- Reuse labels and shortcuts from context menu for consistency.
-- Keep top commands keyboard-first for speed.
+- <I18nText en="Group commands by intent (`format`, `insert`, `actions`)." zh="按意图分组命令（`format`、`insert`、`actions`）。" />
+- <I18nText en="Reuse labels and shortcuts from context menu for consistency." zh="复用右键菜单标签与快捷键，保证一致性。" />
+- <I18nText en="Keep top commands keyboard-first for speed." zh="高频命令优先键盘触发以提升效率。" />

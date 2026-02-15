@@ -1,14 +1,16 @@
-﻿# Saving to Database
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-Saving on every keystroke is expensive and unstable. Use `onDebouncedUpdate` for persistence.
+# <I18nText en="Saving to Database" zh="保存到数据库" />
 
-## Why debounced save
+<I18nText en="Saving on every keystroke is expensive and unstable. Use `onDebouncedUpdate` for persistence." zh="每次按键都保存会带来高成本且不稳定。请使用 `onDebouncedUpdate` 做持久化。" />
 
-- Reduces database write frequency.
-- Avoids race conditions in distributed systems.
-- Preserves responsive typing experience.
+## <I18nText en="Why debounced save" zh="为什么要防抖保存" />
 
-## Example integration
+- <I18nText en="Reduces database write frequency." zh="降低数据库写入频率。" />
+- <I18nText en="Avoids race conditions in distributed systems." zh="减少分布式场景中的竞态问题。" />
+- <I18nText en="Preserves responsive typing experience." zh="保持输入过程流畅响应。" />
+
+## <I18nText en="Example integration" zh="集成示例" />
 
 ```tsx
 import { HybricEditor } from 'hybricmark'
@@ -38,9 +40,9 @@ export function DocumentEditor({ initialDoc }: { initialDoc: unknown }) {
 }
 ```
 
-## Operational advice
+## <I18nText en="Operational advice" zh="线上实践建议" />
 
-- Start at `debounceMs=800` and tune with real traffic.
-- Include `updatedAt` and revision/version fields in payload.
-- Keep saves idempotent (`upsert` with revision checks).
-- Add retry logic for transient network failures.
+- <I18nText en="Start at `debounceMs=800` and tune with real traffic." zh="建议从 `debounceMs=800` 起步，再按真实流量调优。" />
+- <I18nText en="Include `updatedAt` and revision/version fields in payload." zh="在 payload 中加入 `updatedAt` 与 revision/version 字段。" />
+- <I18nText en="Keep saves idempotent (`upsert` with revision checks)." zh="保存接口保持幂等（推荐 `upsert` + revision 校验）。" />
+- <I18nText en="Add retry logic for transient network failures." zh="为瞬时网络故障增加重试逻辑。" />

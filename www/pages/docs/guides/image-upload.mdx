@@ -1,12 +1,14 @@
-﻿# Image Upload
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-HybricMark supports image nodes. Upload transport is application-owned.
+# <I18nText en="Image Upload" zh="图片上传" />
 
-## Recommended flow
+<I18nText en="HybricMark supports image nodes. Upload transport is application-owned." zh="HybricMark 支持图片节点，上传链路由业务应用自行实现。" />
 
-1. User picks file.
-2. Upload to backend/object storage.
-3. Insert returned URL into editor.
+## <I18nText en="Recommended flow" zh="推荐流程" />
+
+1. <I18nText en="User picks file." zh="用户选择文件。" />
+2. <I18nText en="Upload to backend/object storage." zh="上传至业务后端或对象存储。" />
+3. <I18nText en="Insert returned URL into editor." zh="将返回 URL 插入编辑器。" />
 
 ## Example
 
@@ -36,9 +38,9 @@ async function insertImage(editor: Editor, file: File) {
 }
 ```
 
-## Security checklist
+## <I18nText en="Security checklist" zh="安全检查清单" />
 
-- Validate MIME type and extension server-side.
-- Enforce size limits.
-- Strip EXIF if required by policy.
-- Prefer signed URLs and private buckets when needed.
+- <I18nText en="Validate MIME type and extension server-side." zh="服务端校验 MIME 类型与扩展名。" />
+- <I18nText en="Enforce size limits." zh="限制上传体积。" />
+- <I18nText en="Strip EXIF if required by policy." zh="按合规要求清理 EXIF 元数据。" />
+- <I18nText en="Prefer signed URLs and private buckets when needed." zh="需要时优先使用签名 URL 与私有存储桶。" />

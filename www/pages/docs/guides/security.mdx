@@ -1,16 +1,18 @@
-﻿# Security Hardening
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-Treat editor content as untrusted input unless your pipeline explicitly guarantees trust.
+# <I18nText en="Security Hardening" zh="安全加固" />
 
-## Baseline controls
+<I18nText en="Treat editor content as untrusted input unless your pipeline explicitly guarantees trust." zh="除非你的链路明确保证可信，否则应将编辑器内容视为不可信输入。" />
 
-- Sanitize HTML server-side before rendering.
-- Validate URLs (`http`, `https`, `mailto`, `tel`) for link/image attributes.
-- Restrict uploads by size/type and enforce virus scanning where required.
-- Apply CSP and clickjacking protections on render pages.
+## <I18nText en="Baseline controls" zh="基线控制项" />
 
-## Rendering strategy
+- <I18nText en="Sanitize HTML server-side before rendering." zh="渲染前在服务端做 HTML 净化。" />
+- <I18nText en="Validate URLs (`http`, `https`, `mailto`, `tel`) for link/image attributes." zh="对链接/图片 URL 做协议白名单校验（`http`、`https`、`mailto`、`tel`）。" />
+- <I18nText en="Restrict uploads by size/type and enforce virus scanning where required." zh="按大小/类型限制上传，并在需要时启用病毒扫描。" />
+- <I18nText en="Apply CSP and clickjacking protections on render pages." zh="在渲染页配置 CSP 与防点击劫持策略。" />
 
-- Prefer rendering from trusted JSON model in your app runtime.
-- Escape user text where raw HTML injection paths exist.
-- Keep sanitization logic versioned and covered by tests.
+## <I18nText en="Rendering strategy" zh="渲染策略" />
+
+- <I18nText en="Prefer rendering from trusted JSON model in your app runtime." zh="优先从可信 JSON 模型渲染，而不是直接信任原始 HTML。" />
+- <I18nText en="Escape user text where raw HTML injection paths exist." zh="在存在原始 HTML 注入路径的位置对用户文本进行转义。" />
+- <I18nText en="Keep sanitization logic versioned and covered by tests." zh="对净化逻辑做版本管理并覆盖测试。" />

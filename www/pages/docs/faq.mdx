@@ -1,29 +1,31 @@
-﻿# FAQ
+﻿import { I18nText } from '../../components/site/I18nProvider'
 
-## Is this a complete Notion clone?
+# <I18nText en="FAQ" zh="常见问题" />
 
-No. HybricMark is an editor core and integration surface, not a full app framework.
+## <I18nText en="Is this a complete Notion clone?" zh="这是完整的 Notion 克隆方案吗？" />
 
-## Can I use it in Next.js?
+<I18nText en="No. HybricMark is an editor core and integration surface, not a full app framework." zh="不是。HybricMark 是编辑器内核与集成层，不是完整应用框架。" />
 
-Yes. Mount editor surfaces client-side (`dynamic(..., { ssr: false })`).
+## <I18nText en="Can I use it in Next.js?" zh="可以在 Next.js 中使用吗？" />
 
-## Should I store Markdown or JSON?
+<I18nText en="Yes. Mount editor surfaces client-side (`dynamic(..., { ssr: false })`)." zh="可以。请在客户端挂载编辑器（`dynamic(..., { ssr: false })`）。" />
 
-JSON is recommended for block-level operations and UUID-based workflows.
+## <I18nText en="Should I store Markdown or JSON?" zh="应该存 Markdown 还是 JSON？" />
 
-## Why is `onDebouncedUpdate` important?
+<I18nText en="JSON is recommended for block-level operations and UUID-based workflows." zh="推荐存 JSON，更适合块级操作与 UUID 工作流。" />
 
-Saving on every keystroke leads to heavy write pressure and race conditions. Debounce persistence for stability.
+## <I18nText en="Why is `onDebouncedUpdate` important?" zh="为什么 `onDebouncedUpdate` 很重要？" />
 
-## Is output safe by default?
+<I18nText en="Saving on every keystroke leads to heavy write pressure and race conditions. Debounce persistence for stability." zh="每次按键都写库会导致高写入压力和竞态。防抖持久化更稳定。" />
 
-Client-side safeguards exist, but backend sanitization is still mandatory.
+## <I18nText en="Is output safe by default?" zh="输出默认安全吗？" />
 
-## Can I replace context menu UI?
+<I18nText en="Client-side safeguards exist, but backend sanitization is still mandatory." zh="前端有基础保护，但后端内容净化仍是必须项。" />
 
-Yes. The library is headless-oriented. You can wrap and rewire interaction layers.
+## <I18nText en="Can I replace context menu UI?" zh="可以替换右键菜单 UI 吗？" />
 
-## Can I add custom Tiptap extensions?
+<I18nText en="Yes. The library is headless-oriented. You can wrap and rewire interaction layers." zh="可以。库是无头设计，你可以重包裹并重连交互层。" />
 
-Yes. Use the `extensions` prop to merge your extensions into the default stack.
+## <I18nText en="Can I add custom Tiptap extensions?" zh="可以添加自定义 Tiptap 扩展吗？" />
+
+<I18nText en="Yes. Use the `extensions` prop to merge your extensions into the default stack." zh="可以。通过 `extensions` 属性把自定义扩展并入默认扩展栈。" />

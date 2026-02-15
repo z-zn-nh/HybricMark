@@ -1,18 +1,20 @@
-﻿# Getting Started
+﻿import { I18nText } from '../../components/site/I18nProvider'
 
-## Prerequisites
+# <I18nText en="Getting Started" zh="快速开始" />
 
-- React 18+
-- Tiptap peer dependencies available in your app
-- Client-rendered surface for the editor view (especially in Next.js)
+## <I18nText en="Prerequisites" zh="前置条件" />
 
-## Install
+- <I18nText en="React 18+" zh="React 18 及以上" />
+- <I18nText en="Tiptap peer dependencies available in your app" zh="应用中已安装 Tiptap 对等依赖" />
+- <I18nText en="Client-rendered surface for the editor view (especially in Next.js)" zh="编辑器渲染区域需在客户端运行（尤其是 Next.js）" />
+
+## <I18nText en="Install" zh="安装" />
 
 ```bash
 npm install hybricmark @tiptap/react @tiptap/starter-kit
 ```
 
-## Minimal integration
+## <I18nText en="Minimal integration" zh="最小集成" />
 
 ```tsx
 import { HybricEditor } from 'hybricmark'
@@ -29,7 +31,7 @@ export default function EditorPage() {
 }
 ```
 
-## Production baseline
+## <I18nText en="Production baseline" zh="生产环境基线配置" />
 
 ```tsx
 <HybricEditor
@@ -42,22 +44,22 @@ export default function EditorPage() {
 />
 ```
 
-## Styling
+## <I18nText en="Styling" zh="样式接入" />
 
-Import editor styles once in your app entry:
+<I18nText en="Import editor styles once in your app entry:" zh="在应用入口只需引入一次编辑器样式：" />
 
 ```ts
 import 'hybricmark/style.css'
 import 'katex/dist/katex.min.css'
 ```
 
-Then attach your own wrapper class if needed:
+<I18nText en="Then attach your own wrapper class if needed:" zh="然后按需给编辑器挂载业务外层类名：" />
 
 ```tsx
 <HybricEditor className="my-editor-shell" content={content} />
 ```
 
-## Next.js (client-only)
+## <I18nText en="Next.js (client-only)" zh="Next.js（仅客户端渲染）" />
 
 ```tsx
 'use client'
@@ -70,8 +72,8 @@ const HybricEditor = dynamic(
 )
 ```
 
-## Next steps
+## <I18nText en="Next steps" zh="下一步" />
 
-1. Read the [API Reference](/docs/api)
-2. Read [Core Concepts](/docs/concepts)
-3. Implement persistence with [Saving to Database](/docs/guides/saving)
+1. <I18nText en="Read the" zh="阅读" /> [<I18nText en="API Reference" zh="API 参考" />](/docs/api)
+2. <I18nText en="Read" zh="阅读" /> [<I18nText en="Core Concepts" zh="核心概念" />](/docs/concepts)
+3. <I18nText en="Implement persistence with" zh="通过以下文档实现数据持久化：" /> [<I18nText en="Saving to Database" zh="保存到数据库" />](/docs/guides/saving)

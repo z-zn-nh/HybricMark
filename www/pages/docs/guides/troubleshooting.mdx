@@ -1,27 +1,29 @@
-﻿# Troubleshooting
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-## Editor appears blank
+# <I18nText en="Troubleshooting" zh="故障排查" />
 
-- Confirm `hybricmark/style.css` and `katex` CSS are imported.
-- In SSR apps, ensure client-only mount (`dynamic(..., { ssr: false })`).
-- Check browser console for module/chunk loading errors.
+## <I18nText en="Editor appears blank" zh="编辑器空白不显示" />
 
-## Chinese IME issues or cursor jumps
+- <I18nText en="Confirm `hybricmark/style.css` and `katex` CSS are imported." zh="确认已导入 `hybricmark/style.css` 与 `katex` CSS。" />
+- <I18nText en="In SSR apps, ensure client-only mount (`dynamic(..., { ssr: false })`)." zh="SSR 应用中请使用客户端挂载（`dynamic(..., { ssr: false })`）。" />
+- <I18nText en="Check browser console for module/chunk loading errors." zh="检查浏览器控制台是否有模块或 chunk 加载错误。" />
 
-- Do not push parent `content` back into editor each keystroke.
-- Keep editor uncontrolled while composing input.
+## <I18nText en="Chinese IME issues or cursor jumps" zh="中文输入法异常或光标跳动" />
 
-## Save requests are too frequent
+- <I18nText en="Do not push parent `content` back into editor each keystroke." zh="不要在每次按键时把父层 `content` 回写到编辑器。" />
+- <I18nText en="Keep editor uncontrolled while composing input." zh="输入法组合输入期间保持编辑器非受控。" />
 
-- Move persistence logic to `onDebouncedUpdate`.
-- Increase `debounceMs` for large documents.
+## <I18nText en="Save requests are too frequent" zh="保存请求过于频繁" />
 
-## Context menu action is disabled
+- <I18nText en="Move persistence logic to `onDebouncedUpdate`." zh="把持久化逻辑迁移到 `onDebouncedUpdate`。" />
+- <I18nText en="Increase `debounceMs` for large documents." zh="大文档场景适当提高 `debounceMs`。" />
 
-- Check whether current action requires text selection.
-- Verify current selection is inside a compatible node (for table actions).
+## <I18nText en="Context menu action is disabled" zh="右键菜单项是禁用状态" />
 
-## Table action not applied
+- <I18nText en="Check whether current action requires text selection." zh="确认当前动作是否要求先选中文本。" />
+- <I18nText en="Verify current selection is inside a compatible node (for table actions)." zh="确认当前选区在兼容节点内（例如表格动作需位于表格单元格中）。" />
 
-- Confirm cursor is in a table cell.
-- Avoid overriding table keymaps/commands without forwarding defaults.
+## <I18nText en="Table action not applied" zh="表格动作未生效" />
+
+- <I18nText en="Confirm cursor is in a table cell." zh="确认光标位于表格单元格中。" />
+- <I18nText en="Avoid overriding table keymaps/commands without forwarding defaults." zh="避免覆盖表格 keymap/commands 时丢失默认转发逻辑。" />

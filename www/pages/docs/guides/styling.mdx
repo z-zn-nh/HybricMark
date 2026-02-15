@@ -1,12 +1,14 @@
-﻿# Custom Styling
+﻿import { I18nText } from '../../../components/site/I18nProvider'
 
-HybricMark keeps behavior and data in the library while allowing full visual customization.
+# <I18nText en="Custom Styling" zh="自定义样式" />
 
-## Styling strategy
+<I18nText en="HybricMark keeps behavior and data in the library while allowing full visual customization." zh="HybricMark 把行为与数据留在库里，同时完全开放视觉样式自定义。" />
 
-1. Attach your shell class using `className`.
-2. Override `.hm-editor-root` and `.hm-editor-content` in your app stylesheet.
-3. Tune markdown primitives: headings, lists, code, table, quote.
+## <I18nText en="Styling strategy" zh="样式策略" />
+
+1. <I18nText en="Attach your shell class using `className`." zh="通过 `className` 挂载业务外壳类名。" />
+2. <I18nText en="Override `.hm-editor-root` and `.hm-editor-content` in your app stylesheet." zh="在业务样式中覆盖 `.hm-editor-root` 与 `.hm-editor-content`。" />
+3. <I18nText en="Tune markdown primitives: headings, lists, code, table, quote." zh="细调 Markdown 原语：标题、列表、代码、表格、引用。" />
 
 ## Example
 
@@ -33,9 +35,9 @@ HybricMark keeps behavior and data in the library while allowing full visual cus
 }
 ```
 
-## Checklist
+## <I18nText en="Checklist" zh="检查清单" />
 
-- Maintain readable line-height (`>= 1.6`).
-- Ensure dark-mode contrast for all tokens.
-- Verify selected table cells and active states are visible.
-- Avoid global resets that break `.ProseMirror` defaults.
+- <I18nText en="Maintain readable line-height (`>= 1.6`)." zh="保持可读行高（`>= 1.6`）。" />
+- <I18nText en="Ensure dark-mode contrast for all tokens." zh="确保暗色模式下所有色值有足够对比度。" />
+- <I18nText en="Verify selected table cells and active states are visible." zh="确认表格选中态与活动态清晰可见。" />
+- <I18nText en="Avoid global resets that break `.ProseMirror` defaults." zh="避免全局 reset 破坏 `.ProseMirror` 默认行为。" />

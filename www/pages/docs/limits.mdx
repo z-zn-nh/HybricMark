@@ -1,23 +1,25 @@
-﻿# Capabilities & Limits
+﻿import { I18nText } from '../../components/site/I18nProvider'
 
-## What is solid today
+# <I18nText en="Capabilities & Limits" zh="能力与限制" />
 
-- Production-ready rich text editing on Tiptap core.
-- Block UUID generation for core block nodes.
-- Typora-like context interactions and shortcuts.
-- Table editing and cell operations.
-- Footnote and math rendering support.
-- Debounced update channel for persistence.
+## <I18nText en="What is solid today" zh="当前稳定能力" />
 
-## Current limits
+- <I18nText en="Production-ready rich text editing on Tiptap core." zh="基于 Tiptap 内核的生产可用富文本编辑。" />
+- <I18nText en="Block UUID generation for core block nodes." zh="核心块节点 UUID 自动生成。" />
+- <I18nText en="Typora-like context interactions and shortcuts." zh="Typora 风格上下文交互与快捷操作。" />
+- <I18nText en="Table editing and cell operations." zh="表格编辑与单元格操作。" />
+- <I18nText en="Footnote and math rendering support." zh="脚注与数学公式渲染支持。" />
+- <I18nText en="Debounced update channel for persistence." zh="防抖更新通道用于稳定持久化。" />
 
-- CRDT collaboration is not bundled by default.
-- Built-in slash command customization is limited; use custom extensions for advanced menus.
-- Drag-and-drop block reordering is planned, not final.
+## <I18nText en="Current limits" zh="当前限制" />
 
-## Recommended production posture
+- <I18nText en="CRDT collaboration is not bundled by default." zh="默认不内置 CRDT 协同。" />
+- <I18nText en="Built-in slash command customization is limited; use custom extensions for advanced menus." zh="内置斜杠菜单可定制度有限；复杂菜单建议用自定义扩展实现。" />
+- <I18nText en="Drag-and-drop block reordering is planned, not final." zh="块拖拽重排仍在规划阶段，尚未定版。" />
 
-- Keep a server-side sanitization pipeline for untrusted user content.
-- Version your stored document schema.
-- Add integration tests around your extension stack.
-- Track editor performance with realistic document sizes in your product.
+## <I18nText en="Recommended production posture" zh="生产环境建议" />
+
+- <I18nText en="Keep a server-side sanitization pipeline for untrusted user content." zh="为不可信用户内容保留服务端净化管线。" />
+- <I18nText en="Version your stored document schema." zh="为文档存储结构做版本化。" />
+- <I18nText en="Add integration tests around your extension stack." zh="围绕扩展栈增加集成测试。" />
+- <I18nText en="Track editor performance with realistic document sizes in your product." zh="用真实文档规模持续监控编辑器性能。" />
