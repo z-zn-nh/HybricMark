@@ -1,0 +1,43 @@
+﻿# Core Concepts
+
+## 1. Uncontrolled editor architecture
+
+HybricMark is intentionally uncontrolled.
+
+You should not feed `content` back into the editor on every keystroke. Doing so can break IME composition (Chinese/Japanese input) and cause cursor jump issues.
+
+Recommended model:
+
+- `content` as initial value.
+- `onChange` for immediate UI sync.
+- `onDebouncedUpdate` for persistence.
+
+## 2. Block identity as first-class data
+
+Every core block can carry a UUID under `attrs.id`.
+
+This enables:
+
+- block-level comments
+- targeted patch APIs
+- stable references for card extraction and linking
+
+## 3. Hybrid editing interaction
+
+The writing surface remains clean while advanced actions live in contextual interaction points:
+
+- markdown shortcuts
+- right-click context menu
+- keyboard shortcuts
+
+## 4. Headless product integration
+
+HybricMark focuses on behavior and data model.
+
+You can replace or redesign surrounding UI while keeping editor internals stable.
+
+## 5. Persistence and event strategy
+
+- Use `onDebouncedUpdate` for backend writes.
+- Keep server writes idempotent.
+- Track version/revision fields for conflict handling in collaborative products.

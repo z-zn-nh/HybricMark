@@ -1,87 +1,68 @@
-# API Reference
+﻿# API Reference
 
-`HybricEditor` is the main entry point of `hybricmark`.
-It is built on top of Tiptap, with block IDs and Typora-like interactions enabled by default.
+`HybricEditor` is the main integration component.
 
 ## `<HybricEditor />` Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `content` | `string \| JSON` | `undefined` | Initial content. Supports Markdown/HTML string input or a Tiptap JSON document tree. |
-| `editable` | `boolean` | `true` | Enables or disables editing mode. |
-| `placeholder` | `string` | `"Type '/' for commands..."` | Placeholder text for empty documents. |
-| `className` | `string` | `undefined` | Custom classes for the editor root wrapper. |
-| `extensions` | `Extension[]` | `[]` | Additional Tiptap extensions merged into HybricMark defaults. |
-| `editorProps` | `EditorProps` | `undefined` | Native ProseMirror/Tiptap editor props (e.g. `handleKeyDown`, `handlePaste`). |
-| `onChange` | `(editor: Editor) => void` | `undefined` | Compatibility callback. Fires on update and returns the editor instance. |
-| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | Fires on each editor transaction. Useful for immediate UI sync. |
-| `onDebouncedUpdate` | `(editor: Editor) => void` | `undefined` | Recommended for database persistence to avoid high-frequency writes. Internally receives `{ editor, transaction }`; use `editor` in save logic. |
-| `debounceMs` | `number` | `400` | Debounce interval used by `onDebouncedUpdate`. |
-| `onExtract` | `(data) => void` | `undefined` | Triggered by "Extract to Card" actions in context menu. |
+| `content` | `string \| JSONContent` | `undefined` | Initial document input. Accepts Markdown/HTML string or Tiptap JSON. |
+| `editable` | `boolean` | `true` | Toggles editable mode. |
+| `placeholder` | `string` | `"Type '/' for commands..."` | Placeholder text for empty document. |
+| `className` | `string` | `undefined` | CSS class applied to editor root container. |
+| `extensions` | `Extension[]` | `[]` | Additional Tiptap extensions merged with built-in stack. |
+| `editorProps` | `EditorProps` | `undefined` | Native ProseMirror handlers (`handleKeyDown`, `handlePaste`, etc). |
+| `onChange` | `(editor: Editor) => void` | `undefined` | High-frequency callback on editor update. Useful for UI sync. |
+| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | Transaction-level callback for deep integration hooks. |
+| `onDebouncedUpdate` | `({ editor, transaction }) => void` | `undefined` | Debounced callback for persistence. Use this for DB writes. |
+| `debounceMs` | `number` | `400` | Delay for `onDebouncedUpdate` in milliseconds. |
+| `onExtract` | `(data: { id: string; content: JSON; text: string }) => void` | `undefined` | Fired from context action “Extract to Card”. |
 
-> **Why `onDebouncedUpdate` matters**  
-> Saving on every keystroke can flood your API and increase contention on collaborative/stateful backends. Debounced saving is safer and cheaper.
+> **Pro tip**: use `onDebouncedUpdate` for network/database persistence. Writing on each keystroke causes unnecessary load and race conditions.
 
-## Editor Instance Methods
+## Editor instance methods
 
-The callback gives you full access to the Tiptap `editor` instance.
+The callback gives access to the Tiptap editor instance.
 
 ```ts
-// Command chaining
 editor.chain().focus().toggleBold().run()
-
-// Read current state
 editor.getJSON()
 editor.getHTML()
-
-// Programmatic actions
 editor.commands.clearContent()
 editor.commands.focus()
 ```
 
-## Data Structure: Unique Block IDs
+## Data structure: block IDs
 
-Every block node carries an `attrs.id`, enabling block-level references and granular persistence.
+HybricMark attaches IDs to core block nodes for block-level workflows.
 
 ```json
 {
   "type": "doc",
   "content": [
     {
-      "type": "paragraph",
-      "attrs": {
-        "id": "uuid-1234"
-      },
-      "content": [
-        { "type": "text", "text": "Hello HybricMark" }
-      ]
+      "type": "heading",
+      "attrs": { "id": "b1a2-3c4d", "level": 1 },
+      "content": [{ "type": "text", "text": "Hello World" }]
     },
     {
-      "type": "heading",
-      "attrs": {
-        "id": "uuid-5678",
-        "level": 2
-      },
-      "content": [
-        { "type": "text", "text": "Block-level updates" }
-      ]
+      "type": "paragraph",
+      "attrs": { "id": "uuid-1234" },
+      "content": [{ "type": "text", "text": "This block can be referenced directly." }]
     }
   ]
 }
 ```
 
-> **Block IDs vs plain Markdown**  
-> Traditional Markdown is line/text-oriented; it does not guarantee stable block identity.  
-> HybricMark's UUID-backed blocks let you do Notion-style features: block comments, per-block sync, and targeted update patches.
+> **Why this matters**: block IDs enable granular updates, comments by block, and deterministic references for Notion-like product features.
 
-## Practical Extension Setup
+## Extension composition
 
 ```tsx
 import CharacterCount from '@tiptap/extension-character-count'
-import { HybricEditor } from 'hybricmark'
 
 <HybricEditor
-  content="# Title"
+  content={doc}
   extensions={[CharacterCount.configure({ limit: 10000 })]}
   editorProps={{
     handleKeyDown: (_view, event) => {
@@ -94,3 +75,11 @@ import { HybricEditor } from 'hybricmark'
   }}
 />
 ```
+
+## Built-in default behavior
+
+- Typora-like context menu actions.
+- Markdown shortcut support for common blocks.
+- Link handling optimized for editing (`openOnClick: false` in editing flow).
+- Table tooling and inline helpers enabled.
+- Optional extraction callback for block-level business actions.

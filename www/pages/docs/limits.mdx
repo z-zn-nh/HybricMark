@@ -1,0 +1,23 @@
+﻿# Capabilities & Limits
+
+## What is solid today
+
+- Production-ready rich text editing on Tiptap core.
+- Block UUID generation for core block nodes.
+- Typora-like context interactions and shortcuts.
+- Table editing and cell operations.
+- Footnote and math rendering support.
+- Debounced update channel for persistence.
+
+## Current limits
+
+- CRDT collaboration is not bundled by default.
+- Built-in slash command customization is limited; use custom extensions for advanced menus.
+- Drag-and-drop block reordering is planned, not final.
+
+## Recommended production posture
+
+- Keep a server-side sanitization pipeline for untrusted user content.
+- Version your stored document schema.
+- Add integration tests around your extension stack.
+- Track editor performance with realistic document sizes in your product.

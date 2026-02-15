@@ -1,0 +1,16 @@
+﻿# Security Hardening
+
+Treat editor content as untrusted input unless your pipeline explicitly guarantees trust.
+
+## Baseline controls
+
+- Sanitize HTML server-side before rendering.
+- Validate URLs (`http`, `https`, `mailto`, `tel`) for link/image attributes.
+- Restrict uploads by size/type and enforce virus scanning where required.
+- Apply CSP and clickjacking protections on render pages.
+
+## Rendering strategy
+
+- Prefer rendering from trusted JSON model in your app runtime.
+- Escape user text where raw HTML injection paths exist.
+- Keep sanitization logic versioned and covered by tests.

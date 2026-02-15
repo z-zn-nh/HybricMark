@@ -1,16 +1,17 @@
-﻿import type { DocsThemeConfig } from 'nextra-theme-docs'
+import type { DocsThemeConfig } from 'nextra-theme-docs'
+import { TopRightControls } from './components/site/TopRightControls'
 
 const config: DocsThemeConfig = {
   logo: <span style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>HybricMark</span>,
-  project: {
-    link: 'https://github.com/z-zn-nh/HybricMark'
-  },
   docsRepositoryBase: 'https://github.com/z-zn-nh/HybricMark/tree/main/www',
   feedback: {
     content: null
   },
   editLink: {
     content: null
+  },
+  navbar: {
+    extraContent: <TopRightControls />
   },
   footer: {
     content: 'MIT License (c) 2024 HybricMark'

@@ -269,3 +269,91 @@ body {
     min-height: 350px;
   }
 }
+
+.hm-site-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hm-site-control-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  min-width: 32px;
+  border: 1px solid #d6deef;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #334155;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 10px;
+}
+
+.hm-site-control-btn:hover {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: #94a3b8;
+}
+
+.hm-site-control-lang {
+  min-width: 56px;
+}
+
+.hm-editor-loading {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.hm-editor-loading-line {
+  height: 11px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #dbe5f9, #cfd9ef, #dbe5f9);
+  background-size: 220px 100%;
+  animation: hmDocPulse 1.5s linear infinite;
+}
+
+.hm-editor-loading-line-lg {
+  width: 68%;
+}
+
+@keyframes hmDocPulse {
+  from {
+    background-position-x: 0;
+  }
+
+  to {
+    background-position-x: 220px;
+  }
+}
+
+.nextra-sidebar-footer {
+  display: none !important;
+}
+
+body.hm-playground-route .nextra-sidebar-container,
+body.hm-playground-route .nextra-toc {
+  display: none !important;
+}
+
+body.hm-playground-route .nextra-content {
+  max-width: none !important;
+  width: 100% !important;
+  padding-left: max(env(safe-area-inset-left), 1rem) !important;
+  padding-right: max(env(safe-area-inset-right), 1rem) !important;
+}
+
+html.dark .hm-site-control-btn {
+  background: rgba(15, 23, 42, 0.84);
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+html.dark .hm-site-control-btn:hover {
+  border-color: #64748b;
+}

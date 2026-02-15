@@ -1,105 +1,77 @@
-# Getting Started
+﻿# Getting Started
 
-`hybricmark` 是基于 Tiptap 的 React 编辑器库：开箱即用，同时保留底层可扩展能力。
+## Prerequisites
 
-## Installation
+- React 18+
+- Tiptap peer dependencies available in your app
+- Client-rendered surface for the editor view (especially in Next.js)
+
+## Install
 
 ```bash
 npm install hybricmark @tiptap/react @tiptap/starter-kit
 ```
 
-## 1) Quick Start
+## Minimal integration
 
 ```tsx
-import { useState } from 'react'
 import { HybricEditor } from 'hybricmark'
 
-export default function NoteEditor() {
-  const [latest, setLatest] = useState<unknown>(null)
-
+export default function EditorPage() {
   return (
     <HybricEditor
-      content="# Hello HybricMark\n\nType here..."
-      placeholder="输入 '/' 触发命令"
-      onUpdate={({ editor }) => {
-        setLatest(editor.getJSON())
-      }}
-      onExtract={({ id, text }) => {
-        console.log('Extracted block:', id, text)
+      content="# Hello\n\nStart typing..."
+      onChange={(editor) => {
+        console.log(editor.getJSON())
       }}
     />
   )
 }
 ```
 
-## 2) Use Debounced Save (Recommended)
-
-高频输入时，建议用 `onDebouncedUpdate` 做持久化，避免每个 transaction 都写库。
+## Production baseline
 
 ```tsx
 <HybricEditor
   content={initialDoc}
+  placeholder="Type '/' for commands..."
   debounceMs={800}
   onDebouncedUpdate={({ editor }) => {
-    void fetch('/api/docs/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editor.getJSON()),
-    })
+    void saveToAPI(editor.getJSON())
   }}
 />
 ```
 
-## 3) Inject Custom Extensions
+## Styling
+
+Import editor styles once in your app entry:
+
+```ts
+import 'hybricmark/style.css'
+import 'katex/dist/katex.min.css'
+```
+
+Then attach your own wrapper class if needed:
 
 ```tsx
-import CharacterCount from '@tiptap/extension-character-count'
-
-<HybricEditor
-  content={initialDoc}
-  extensions={[
-    CharacterCount.configure({ limit: 20000 }),
-  ]}
-/>
+<HybricEditor className="my-editor-shell" content={content} />
 ```
 
-## 4) Override Native Editor Behavior
-
-通过 `editorProps` 接入 ProseMirror 原生事件（如快捷键拦截）：
+## Next.js (client-only)
 
 ```tsx
-<HybricEditor
-  editorProps={{
-    handleKeyDown: (_view, event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
-        event.preventDefault()
-        console.log('save shortcut')
-        return true
-      }
-      return false
-    },
-  }}
-/>
+'use client'
+
+import dynamic from 'next/dynamic'
+
+const HybricEditor = dynamic(
+  () => import('hybricmark').then((mod) => mod.HybricEditor),
+  { ssr: false },
+)
 ```
 
-## 5) Data Model: Block IDs
+## Next steps
 
-HybricMark 会为块级节点注入唯一 ID，便于块级引用、增量同步与评论锚点。
-
-```json
-{
-  "type": "doc",
-  "content": [
-    {
-      "type": "paragraph",
-      "attrs": { "id": "7f652fb0-0815-4f41-9efb-b67fe7b18390" },
-      "content": [{ "type": "text", "text": "hello" }]
-    }
-  ]
-}
-```
-
-## Next
-
-- 查看完整 API：[`/docs/api`](/docs/api)
-- 体验在线示例：[`/playground`](/playground)
+1. Read the [API Reference](/docs/api)
+2. Read [Core Concepts](/docs/concepts)
+3. Implement persistence with [Saving to Database](/docs/guides/saving)

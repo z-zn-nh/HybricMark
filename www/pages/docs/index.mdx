@@ -1,7 +1,37 @@
-# Documentation
+﻿# HybricMark Documentation
 
-Welcome to the HybricMark docs.
+HybricMark is a production-oriented, headless markdown editor for React built on top of Tiptap.
 
-- Start here: [Getting Started](/docs/getting-started)
-- Component API: [API Reference](/docs/api)
-- Real-world guides: [Saving to Database](/docs/guides/saving)
+This documentation is written for engineers integrating editor capabilities into real products.
+
+## What is different from plain Tiptap setup?
+
+- Built-in block UUID strategy (`attrs.id`) for paragraph/heading/list workflows.
+- Typora-like interaction defaults (context-first, markdown shortcut-friendly).
+- Opinionated integration surface focused on writing products.
+- Ready-to-use persistence hook (`onDebouncedUpdate`) to avoid write storms.
+
+## Recommended reading order
+
+1. [Getting Started](/docs/getting-started)
+2. [API Reference](/docs/api)
+3. [Core Concepts](/docs/concepts)
+4. [Saving to Database](/docs/guides/saving)
+5. [Troubleshooting](/docs/guides/troubleshooting)
+
+## Guides
+
+- [Custom Styling](/docs/guides/styling)
+- [Image Upload](/docs/guides/image-upload)
+- [Custom Slash Menu](/docs/guides/slash-menu)
+- [Next.js / SSR](/docs/guides/ssr)
+- [Security Hardening](/docs/guides/security)
+
+## Boundaries and support
+
+- [Capabilities & Limits](/docs/limits)
+- [FAQ](/docs/faq)
+
+## Live verification
+
+Use the [Playground](/playground) to inspect real-time JSON output and confirm block IDs while typing.

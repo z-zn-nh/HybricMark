@@ -1,0 +1,35 @@
+﻿# Next.js / SSR
+
+Editor surfaces must run on the client.
+
+## Recommended pattern
+
+```tsx
+'use client'
+
+import dynamic from 'next/dynamic'
+
+const HybricEditor = dynamic(
+  () => import('hybricmark').then((mod) => mod.HybricEditor),
+  { ssr: false },
+)
+```
+
+## IME and cursor stability
+
+Do not force-update `content` from parent state on every keypress.
+
+Use:
+
+- `content` as initial value.
+- `onChange` for immediate UI.
+- `onDebouncedUpdate` for persistence.
+
+## Styling imports
+
+In your app entry:
+
+```ts
+import 'hybricmark/style.css'
+import 'katex/dist/katex.min.css'
+```

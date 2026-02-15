@@ -1,0 +1,28 @@
+﻿# Custom Slash Menu
+
+HybricMark is context-first by default, but slash interactions can be extended through Tiptap extensions.
+
+## Integration path
+
+- Implement a custom extension/plugin for slash command detection.
+- Pass it through `extensions`.
+- Keep command rendering state in your app layer when menu complexity grows.
+
+## Example shape
+
+```tsx
+import type { Extension } from '@tiptap/core'
+
+const MySlashExtension: Extension = /* your extension */
+
+<HybricEditor
+  content={doc}
+  extensions={[MySlashExtension]}
+/>
+```
+
+## Product-level recommendations
+
+- Group commands by intent (`format`, `insert`, `actions`).
+- Reuse labels and shortcuts from context menu for consistency.
+- Keep top commands keyboard-first for speed.

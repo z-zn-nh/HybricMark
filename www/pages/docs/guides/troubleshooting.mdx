@@ -1,0 +1,27 @@
+﻿# Troubleshooting
+
+## Editor appears blank
+
+- Confirm `hybricmark/style.css` and `katex` CSS are imported.
+- In SSR apps, ensure client-only mount (`dynamic(..., { ssr: false })`).
+- Check browser console for module/chunk loading errors.
+
+## Chinese IME issues or cursor jumps
+
+- Do not push parent `content` back into editor each keystroke.
+- Keep editor uncontrolled while composing input.
+
+## Save requests are too frequent
+
+- Move persistence logic to `onDebouncedUpdate`.
+- Increase `debounceMs` for large documents.
+
+## Context menu action is disabled
+
+- Check whether current action requires text selection.
+- Verify current selection is inside a compatible node (for table actions).
+
+## Table action not applied
+
+- Confirm cursor is in a table cell.
+- Avoid overriding table keymaps/commands without forwarding defaults.

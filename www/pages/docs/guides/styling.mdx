@@ -1,0 +1,41 @@
+﻿# Custom Styling
+
+HybricMark keeps behavior and data in the library while allowing full visual customization.
+
+## Styling strategy
+
+1. Attach your shell class using `className`.
+2. Override `.hm-editor-root` and `.hm-editor-content` in your app stylesheet.
+3. Tune markdown primitives: headings, lists, code, table, quote.
+
+## Example
+
+```tsx
+<HybricEditor content={doc} className="my-editor-shell" />
+```
+
+```css
+.my-editor-shell .hm-editor-content {
+  font-family: Inter, system-ui, sans-serif;
+  line-height: 1.75;
+  color: #1f2937;
+}
+
+.my-editor-shell .hm-editor-content h1 {
+  font-size: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.my-editor-shell .hm-editor-content code {
+  background: #f3f4f6;
+  border-radius: 4px;
+  padding: 0.15rem 0.35rem;
+}
+```
+
+## Checklist
+
+- Maintain readable line-height (`>= 1.6`).
+- Ensure dark-mode contrast for all tokens.
+- Verify selected table cells and active states are visible.
+- Avoid global resets that break `.ProseMirror` defaults.

@@ -1,0 +1,44 @@
+﻿# Image Upload
+
+HybricMark supports image nodes. Upload transport is application-owned.
+
+## Recommended flow
+
+1. User picks file.
+2. Upload to backend/object storage.
+3. Insert returned URL into editor.
+
+## Example
+
+```tsx
+import type { Editor } from '@tiptap/core'
+
+async function upload(file: File) {
+  const form = new FormData()
+  form.append('file', file)
+
+  const response = await fetch('/api/upload', {
+    method: 'POST',
+    body: form,
+  })
+
+  if (!response.ok) {
+    throw new Error('Upload failed')
+  }
+
+  const data = (await response.json()) as { url: string }
+  return data.url
+}
+
+async function insertImage(editor: Editor, file: File) {
+  const url = await upload(file)
+  editor.chain().focus().setImage({ src: url, alt: file.name }).run()
+}
+```
+
+## Security checklist
+
+- Validate MIME type and extension server-side.
+- Enforce size limits.
+- Strip EXIF if required by policy.
+- Prefer signed URLs and private buckets when needed.

@@ -1,3 +1,4 @@
+﻿import path from 'node:path'
 import nextra from 'nextra'
 
 const withNextra = nextra({
@@ -7,5 +8,16 @@ const withNextra = nextra({
 
 export default withNextra({
   reactStrictMode: true,
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx']
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
+  experimental: {
+    externalDir: true
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias ?? {}),
+      react: path.resolve(process.cwd(), 'node_modules/react'),
+      'react-dom': path.resolve(process.cwd(), 'node_modules/react-dom')
+    }
+    return config
+  }
 })

@@ -1,0 +1,29 @@
+﻿# FAQ
+
+## Is this a complete Notion clone?
+
+No. HybricMark is an editor core and integration surface, not a full app framework.
+
+## Can I use it in Next.js?
+
+Yes. Mount editor surfaces client-side (`dynamic(..., { ssr: false })`).
+
+## Should I store Markdown or JSON?
+
+JSON is recommended for block-level operations and UUID-based workflows.
+
+## Why is `onDebouncedUpdate` important?
+
+Saving on every keystroke leads to heavy write pressure and race conditions. Debounce persistence for stability.
+
+## Is output safe by default?
+
+Client-side safeguards exist, but backend sanitization is still mandatory.
+
+## Can I replace context menu UI?
+
+Yes. The library is headless-oriented. You can wrap and rewire interaction layers.
+
+## Can I add custom Tiptap extensions?
+
+Yes. Use the `extensions` prop to merge your extensions into the default stack.

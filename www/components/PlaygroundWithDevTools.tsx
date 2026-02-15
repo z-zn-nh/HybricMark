@@ -1,107 +1,218 @@
-import { useMemo, useState } from 'react'
-import dynamic from 'next/dynamic'
-import type { HybricEditorProps } from '@hybricmark/core'
+﻿import { useEffect, useMemo, useState } from 'react'
 
-const DEMO_CONTENT = `# HybricMark Playground
+import { HybridEditorClient } from './HybridEditorClient'
+import { useI18n } from './site/I18nProvider'
 
-Type in the editor and inspect real-time JSON on the right.
-
-- Every block has an id
-- Right click for context actions
-- Markdown shortcuts are enabled`
-
-const HybricEditor = dynamic<HybricEditorProps>(
-  () => import('@hybricmark/core').then((mod) => mod.HybricEditor),
-  { ssr: false },
-)
+const DEMO_CONTENT = {
+  type: 'doc',
+  content: [
+    {
+      type: 'heading',
+      attrs: { level: 1 },
+      content: [{ type: 'text', text: 'Playground Document' }],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'This is a real editor instance. Type on the left and inspect document JSON on the right.',
+        },
+      ],
+    },
+    {
+      type: 'heading',
+      attrs: { level: 2 },
+      content: [{ type: 'text', text: 'Try These Actions' }],
+    },
+    {
+      type: 'bulletList',
+      content: [
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Use right-click context menu' }] }],
+        },
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Type markdown shortcuts: ##, -, >, ```' }] }],
+        },
+        {
+          type: 'listItem',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Observe attrs.id updating in JSON output' }] }],
+        },
+      ],
+    },
+  ],
+}
 
 export function PlaygroundWithDevTools() {
-  const [json, setJson] = useState<object>({})
+  const { language } = useI18n()
+  const [json, setJson] = useState<object>(DEMO_CONTENT)
   const initialContent = useMemo(() => DEMO_CONTENT, [])
 
-  return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 1fr) minmax(320px, 460px)',
-        gap: 16,
-        width: '100%',
-        maxWidth: 1320,
-        margin: '0 auto',
-        padding: '12px 0 24px',
-      }}
-    >
-      <section
-        style={{
-          border: '1px solid #e5e7eb',
-          borderRadius: 12,
-          background: '#fff',
-          minHeight: '76vh',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            padding: '10px 14px',
-            borderBottom: '1px solid #eef0f3',
-            fontSize: 12,
-            letterSpacing: '0.08em',
-            color: '#6b7280',
-            textTransform: 'uppercase',
-            fontWeight: 600,
-          }}
-        >
-          Editor
-        </div>
-        <div style={{ padding: 14 }}>
-          <HybricEditor
-            content={initialContent}
-            onChange={(editor) => {
-              setJson(editor.getJSON())
-            }}
-          />
-        </div>
-      </section>
+  useEffect(() => {
+    document.body.classList.add('hm-playground-route')
+    return () => {
+      document.body.classList.remove('hm-playground-route')
+    }
+  }, [])
 
-      <aside
-        style={{
-          border: '1px solid #1f2937',
-          borderRadius: 12,
-          background: '#0b1220',
-          color: '#e5e7eb',
-          minHeight: '76vh',
-          overflow: 'hidden',
-        }}
-      >
-        <div
-          style={{
-            padding: '10px 14px',
-            borderBottom: '1px solid #1f2937',
-            fontSize: 12,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color: '#93c5fd',
-            fontWeight: 700,
-          }}
-        >
-          JSON Output (Real-time)
-        </div>
-        <pre
-          style={{
-            margin: 0,
-            padding: 14,
-            height: 'calc(76vh - 40px)',
-            overflow: 'auto',
-            fontSize: 12,
-            lineHeight: 1.6,
-            fontFamily:
-              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace',
-            whiteSpace: 'pre',
-          }}
-        >
-          {JSON.stringify(json, null, 2)}
-        </pre>
-      </aside>
-    </div>
+  const copy =
+    language === 'zh'
+      ? {
+          title: '在线 Playground',
+          subtitle: '左侧输入，右侧实时查看 JSON（含块级 id）。',
+          left: '编辑器',
+          right: 'JSON 输出（实时）',
+        }
+      : {
+          title: 'Live Playground',
+          subtitle: 'Edit on the left, inspect live JSON with block ids on the right.',
+          left: 'Editor',
+          right: 'JSON Output (Real-time)',
+        }
+
+  return (
+    <section className="hm-playground-page">
+      <header className="hm-playground-top">
+        <h1>{copy.title}</h1>
+        <p>{copy.subtitle}</p>
+      </header>
+
+      <div className="hm-playground-layout">
+        <article className="hm-playground-panel hm-playground-panel-editor">
+          <div className="hm-playground-panel-head">{copy.left}</div>
+          <div className="hm-playground-panel-body hm-playground-editor-body">
+            <HybridEditorClient
+              content={initialContent}
+              editable
+              onChange={(editor) => setJson(editor.getJSON())}
+            />
+          </div>
+        </article>
+
+        <aside className="hm-playground-panel hm-playground-panel-json">
+          <div className="hm-playground-panel-head">{copy.right}</div>
+          <pre className="hm-playground-json">{JSON.stringify(json, null, 2)}</pre>
+        </aside>
+      </div>
+
+      <style jsx>{`
+        .hm-playground-page {
+          width: 100%;
+          max-width: 1600px;
+          margin: 0 auto;
+          padding: 10px 0 28px;
+        }
+
+        .hm-playground-top {
+          margin-bottom: 14px;
+        }
+
+        .hm-playground-top h1 {
+          margin: 0;
+          font-size: clamp(1.8rem, 4vw, 2.5rem);
+          letter-spacing: -0.02em;
+          color: #0f172a;
+        }
+
+        .hm-playground-top p {
+          margin: 8px 0 0;
+          color: #64748b;
+        }
+
+        .hm-playground-layout {
+          display: grid;
+          grid-template-columns: minmax(0, 1.6fr) minmax(380px, 1fr);
+          gap: 16px;
+        }
+
+        .hm-playground-panel {
+          border: 1px solid #d7e0f2;
+          border-radius: 14px;
+          overflow: hidden;
+          background: rgba(255, 255, 255, 0.88);
+          box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        .hm-playground-panel-head {
+          padding: 11px 14px;
+          border-bottom: 1px solid #e3e8f4;
+          font-size: 12px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #64748b;
+          font-weight: 700;
+        }
+
+        .hm-playground-panel-body {
+          padding: 16px;
+          min-height: 74vh;
+          max-height: 74vh;
+          overflow: auto;
+        }
+
+        .hm-playground-editor-body {
+          background: #fff;
+        }
+
+        .hm-playground-panel-json {
+          border-color: #122241;
+          background: #081328;
+        }
+
+        .hm-playground-panel-json .hm-playground-panel-head {
+          color: #93c5fd;
+          border-bottom-color: #16325d;
+        }
+
+        .hm-playground-json {
+          margin: 0;
+          padding: 16px;
+          min-height: 74vh;
+          max-height: 74vh;
+          overflow: auto;
+          white-space: pre;
+          font-size: 12px;
+          line-height: 1.6;
+          color: #dbeafe;
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+        }
+
+        @media (max-width: 1200px) {
+          .hm-playground-layout {
+            grid-template-columns: 1fr;
+          }
+
+          .hm-playground-panel-body,
+          .hm-playground-json {
+            min-height: 54vh;
+            max-height: 54vh;
+          }
+        }
+
+        :global(html.dark) .hm-playground-top h1 {
+          color: #f8fafc;
+        }
+
+        :global(html.dark) .hm-playground-top p {
+          color: #94a3b8;
+        }
+
+        :global(html.dark) .hm-playground-panel {
+          border-color: #334155;
+          background: rgba(15, 23, 42, 0.86);
+        }
+
+        :global(html.dark) .hm-playground-panel-head {
+          border-bottom-color: #334155;
+          color: #94a3b8;
+        }
+
+        :global(html.dark) .hm-playground-editor-body {
+          background: rgba(15, 23, 42, 0.75);
+        }
+      `}</style>
+    </section>
   )
 }
