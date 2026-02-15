@@ -1,0 +1,125 @@
+import { I18nText } from '../../../components/site/I18nProvider'
+
+# <I18nText en="Handling Image Uploads" zh="处理图片上传" />
+
+<I18nText
+  en="This guide shows a production-safe image upload flow for HybricMark."
+  zh="本指南展示 HybricMark 的生产级图片上传流程。"
+/>
+
+## <I18nText en="The Problem" zh="问题背景" />
+
+<I18nText
+  en="A default editor flow often inserts images as Base64 data URLs. This is convenient for demos, but harmful in production:"
+  zh="默认编辑器流程常把图片插入成 Base64 data URL。演示阶段方便，但在生产环境会带来问题："
+/>
+
+- <I18nText en="Huge document payloads and slow saves." zh="文档体积暴涨，保存变慢。" />
+- <I18nText en="Poor cacheability and expensive database storage." zh="缓存效果差，数据库存储成本高。" />
+- <I18nText en="Difficult CDN optimization and image lifecycle management." zh="难以做 CDN 优化和图片生命周期管理。" />
+
+<I18nText
+  en="For real products, upload the file first, then insert the remote URL into the editor."
+  zh="在真实产品里，应该先上传文件，再把远程 URL 插入编辑器。"
+/>
+
+## <I18nText en="The Solution" zh="推荐方案" />
+
+<I18nText
+  en="Use one of these two strategies:"
+  zh="推荐两种实现路径："
+/>
+
+1. <I18nText en="Pass an `uploadFn` prop if your HybricMark wrapper supports it." zh="如果你的 HybricMark 封装支持 `uploadFn`，直接传入上传函数。" />
+2. <I18nText en="Handle paste/drop in `editorProps`, upload manually, then call `setImage`." zh="在 `editorProps` 中处理粘贴/拖拽，手动上传后调用 `setImage`。" />
+
+## <I18nText en="Copy-paste Ready Example" zh="可直接拷贝的示例" />
+
+```tsx
+import type { Editor } from '@tiptap/core'
+import type { EditorProps } from '@tiptap/pm/view'
+import { HybricEditor } from 'hybricmark'
+
+// 1) Replace with your real backend/API integration
+async function uploadToCloudinary(file: File): Promise<string> {
+  const form = new FormData()
+  form.append('file', file)
+  form.append('upload_preset', '<your-preset>')
+
+  const res = await fetch('https://api.cloudinary.com/v1_1/<cloud-name>/image/upload', {
+    method: 'POST',
+    body: form,
+  })
+
+  if (!res.ok) {
+    throw new Error('Image upload failed')
+  }
+
+  const data = (await res.json()) as { secure_url: string }
+  return data.secure_url
+}
+
+function isImageFile(file: File) {
+  return file.type.startsWith('image/')
+}
+
+async function uploadAndInsertImage(editor: Editor, file: File) {
+  const url = await uploadToCloudinary(file)
+
+  // CRITICAL: Insert remote URL, never Base64 for production persistence.
+  editor.chain().focus().setImage({ src: url }).run()
+}
+
+const editorProps: EditorProps = {
+  handlePaste(view, event) {
+    const files = Array.from(event.clipboardData?.files ?? []).filter(isImageFile)
+    if (!files.length) return false
+
+    event.preventDefault()
+    const editor = (view as unknown as { editor?: Editor }).editor
+    if (!editor) return true
+
+    void Promise.all(files.map((file) => uploadAndInsertImage(editor, file)))
+    return true
+  },
+
+  handleDrop(view, event) {
+    const files = Array.from(event.dataTransfer?.files ?? []).filter(isImageFile)
+    if (!files.length) return false
+
+    event.preventDefault()
+    const editor = (view as unknown as { editor?: Editor }).editor
+    if (!editor) return true
+
+    void Promise.all(files.map((file) => uploadAndInsertImage(editor, file)))
+    return true
+  },
+}
+
+export default function EditorWithUpload() {
+  return (
+    <HybricEditor
+      content="# Image Upload Demo"
+      // Optional: if your wrapper supports direct upload hooks
+      uploadFn={uploadToCloudinary}
+      editorProps={editorProps}
+    />
+  )
+}
+```
+
+## <I18nText en="UX Tips (Recommended)" zh="体验优化建议" />
+
+- <I18nText en="Show an inline `Uploading...` placeholder while the request is in progress." zh="上传中显示行内 `Uploading...` 占位状态。" />
+- <I18nText en="Disable duplicate uploads for the same file hash." zh="基于文件 hash 防止重复上传。" />
+- <I18nText en="Surface upload errors near the cursor, not only in console logs." zh="上传失败要在光标附近可见提示，不要只打控制台日志。" />
+- <I18nText en="Generate thumbnails server-side for large images when possible." zh="大图建议服务端生成缩略图。" />
+
+## <I18nText en="Security Checklist" zh="安全清单" />
+
+- <I18nText en="Validate MIME type and file size on the server." zh="服务端校验 MIME 类型和大小。" />
+- <I18nText en="Use signed upload tokens when exposing direct upload endpoints." zh="直传场景使用签名令牌。" />
+- <I18nText en="Sanitize and whitelist final image URLs before persistence." zh="持久化前对图片 URL 做白名单校验。" />
+
+> <I18nText en="Best practice: store editor content as JSON with remote image URLs. Avoid persisting Base64 in document content." zh="最佳实践：文档存 JSON + 远程图片 URL。避免把 Base64 直接存进文档内容。" />
+
