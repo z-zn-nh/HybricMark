@@ -1,0 +1,41 @@
+import { I18nText } from '../../../components/site/I18nProvider'
+
+# <I18nText en="Link Interaction" zh="链接交互" />
+
+<I18nText
+  en="HybricMark uses editing-safe link behavior: click does not immediately navigate while editing, and link editing is exposed through context menu + shortcuts."
+  zh="HybricMark 使用编辑友好的链接行为：编辑态点击不会立即跳转，并提供右键菜单与快捷键修改链接。"
+/>
+
+## <I18nText en="Default link config" zh="默认链接配置" />
+
+```ts
+Link.configure({
+  openOnClick: false,
+  autolink: true,
+  linkOnPaste: true,
+})
+```
+
+## <I18nText en="User interactions" zh="用户交互" />
+
+- <I18nText en="Right click -> Link: opens link editor dialog." zh="右键 -> 链接：打开链接编辑浮层。" />
+- <I18nText en="If current selection already has a link, URL is prefilled and selected." zh="若选区已有链接，地址会回显并全选。" />
+- <I18nText en="Hover on link for 500ms shows URL tooltip." zh="鼠标悬停链接 500ms 显示 URL 提示。" />
+- <I18nText en="`Mod+K` / `Mod+Shift+K` opens link editor." zh="`Mod+K` / `Mod+Shift+K` 可快速打开链接编辑器。" />
+
+## <I18nText en="How to open links in read-only mode" zh="只读模式跳转链接" />
+
+<I18nText
+  en="When editor is read-only, links are opened in a new tab (`noopener,noreferrer`)."
+  zh="在只读模式下，链接会以新标签页打开（`noopener,noreferrer`）。"
+/>
+
+```tsx
+<HybricEditor content={doc} editable={false} />
+```
+
+## <I18nText en="Security notes" zh="安全建议" />
+
+- <I18nText en="HybricMark blocks unsafe URL schemes in link handling." zh="HybricMark 在链接处理中会阻断危险 URL 协议。" />
+- <I18nText en="Still sanitize/validate URLs server-side before persistence." zh="持久化前仍要在服务端做 URL 校验。" />

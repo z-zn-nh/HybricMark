@@ -900,3 +900,123 @@
 .hm-editor-dialog-btn-ghost:hover {
   background: #eceff3;
 }
+
+html.dark .hm-editor-root .hm-editor-content,
+html.dark .hm-prose {
+  color: #d1d5db;
+}
+
+html.dark .hm-editor-root .hm-editor-content h1,
+html.dark .hm-editor-root .hm-editor-content h2,
+html.dark .hm-editor-root .hm-editor-content h3,
+html.dark .hm-editor-root .hm-editor-content h4,
+html.dark .hm-editor-root .hm-editor-content h5,
+html.dark .hm-editor-root .hm-editor-content h6,
+html.dark .hm-prose h1,
+html.dark .hm-prose h2,
+html.dark .hm-prose h3,
+html.dark .hm-prose h4,
+html.dark .hm-prose h5,
+html.dark .hm-prose h6 {
+  color: #f8fafc;
+}
+
+html.dark .hm-editor-root .hm-editor-content h1,
+html.dark .hm-editor-root .hm-editor-content h2,
+html.dark .hm-prose h1,
+html.dark .hm-prose h2 {
+  border-bottom-color: #334155;
+}
+
+html.dark .hm-editor-root .hm-editor-content h6,
+html.dark .hm-prose h6 {
+  color: #cbd5e1;
+}
+
+html.dark .hm-editor-root .hm-editor-content a,
+html.dark .hm-prose a {
+  color: #60a5fa;
+}
+
+html.dark .hm-editor-root .hm-editor-content blockquote,
+html.dark .hm-prose blockquote {
+  border-left-color: #475569;
+  color: #94a3b8;
+}
+
+html.dark .hm-editor-root .hm-editor-content code,
+html.dark .hm-prose code {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+html.dark .hm-editor-root .hm-editor-content pre,
+html.dark .hm-prose pre {
+  border-color: #334155;
+  background: #0f172a;
+}
+
+html.dark .hm-editor-root .hm-editor-content pre code,
+html.dark .hm-prose pre code {
+  background: transparent;
+  color: #cbd5e1;
+}
+
+html.dark .hm-editor-root .hm-editor-content mark,
+html.dark .hm-prose mark {
+  background: #713f12;
+  color: #fef3c7;
+}
+
+html.dark .hm-editor-root .hm-editor-content th,
+html.dark .hm-editor-root .hm-editor-content td,
+html.dark .hm-prose th,
+html.dark .hm-prose td {
+  border-color: #334155;
+}
+
+html.dark .hm-editor-root .hm-editor-content th,
+html.dark .hm-prose th {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+html.dark .hm-editor-root .hm-editor-content tbody tr:nth-child(2n),
+html.dark .hm-prose tbody tr:nth-child(2n) {
+  background: #111827;
+}
+
+html.dark .hm-editor-root .hm-editor-content .selectedCell,
+html.dark .hm-prose .selectedCell {
+  background-color: rgba(96, 165, 250, 0.24) !important;
+}
+
+html.dark .hm-editor-root .hm-editor-content .column-resize-handle,
+html.dark .hm-prose .column-resize-handle {
+  background-color: #60a5fa;
+}
+
+html.dark .hm-editor-root .hm-editor-content p.is-editor-empty:first-child::before,
+html.dark .hm-prose p.is-editor-empty:first-child::before {
+  color: #64748b;
+}
+
+html.dark .hm-editor-root .hm-editor-content li[data-checked="true"] > div,
+html.dark .hm-prose li[data-checked="true"] > div {
+  color: #94a3b8;
+}
+
+html.dark .hm-editor-root .hm-editor-content .hm-footnote-ref-token.hm-footnote-ref-token-valid,
+html.dark .hm-prose .hm-footnote-ref-token.hm-footnote-ref-token-valid,
+html.dark .hm-editor-root .hm-editor-content .hm-footnote-backref-btn,
+html.dark .hm-prose .hm-footnote-backref-btn,
+html.dark .hm-editor-root .hm-editor-content .footnote-backref,
+html.dark .hm-prose .footnote-backref {
+  color: #60a5fa;
+}
+
+html.dark .hm-editor-root .hm-editor-content .footnotes,
+html.dark .hm-prose .footnotes {
+  border-top-color: #334155;
+  color: #94a3b8;
+}

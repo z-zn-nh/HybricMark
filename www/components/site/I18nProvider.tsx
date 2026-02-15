@@ -10,7 +10,6 @@ interface I18nContextValue {
 }
 
 const I18nContext = createContext<I18nContextValue | null>(null)
-
 const STORAGE_KEY = 'hybricmark-doc-lang'
 
 const UI_TEXT = {
@@ -30,6 +29,10 @@ const UI_TEXT = {
   'Saving to Database': { en: 'Saving to Database', zh: '保存到数据库' },
   'Custom Styling': { en: 'Custom Styling', zh: '自定义样式' },
   'Handling Image Uploads': { en: 'Handling Image Uploads', zh: '处理图片上传' },
+  'Table Workflows': { en: 'Table Workflows', zh: '表格工作流' },
+  'Link Interaction': { en: 'Link Interaction', zh: '链接交互' },
+  'Keyboard Shortcuts': { en: 'Keyboard Shortcuts', zh: '快捷键系统' },
+  'Footnotes & Math': { en: 'Footnotes & Math', zh: '注脚与数学公式' },
   'Custom Slash Menu': { en: 'Custom Slash Menu', zh: '自定义斜杠菜单' },
   'Next.js / SSR': { en: 'Next.js / SSR', zh: 'Next.js / SSR' },
   'Security Hardening': { en: 'Security Hardening', zh: '安全加固' },
@@ -45,18 +48,20 @@ const SEARCH_PLACEHOLDER = {
   zh: ['搜索文档...', '搜索文档…'],
 } as const
 
-const LAST_UPDATED = {
+const LAST_UPDATED_PREFIX = {
   en: 'Last updated on',
   zh: '最后更新于',
 } as const
 
 function patchNextraUi(language: Language) {
-  if (typeof document === 'undefined') return
+  if (typeof document === 'undefined') {
+    return
+  }
 
   const opposite: Language = language === 'zh' ? 'en' : 'zh'
   const labels = Object.values(UI_TEXT)
-
   const allElements = document.querySelectorAll<HTMLElement>('body *')
+
   for (const el of allElements) {
     const textNodes = Array.from(el.childNodes).filter(
       (node): node is Text => node.nodeType === Node.TEXT_NODE && Boolean(node.nodeValue?.trim()),
@@ -67,16 +72,24 @@ function patchNextraUi(language: Language) {
       const trimmed = currentRaw.trim()
 
       for (const label of labels) {
-        const from = language === 'zh' ? label.en : label.zh
+        const from = label[opposite]
         const to = label[language]
+
         if (trimmed === from && from !== to) {
+          node.nodeValue = currentRaw.replace(trimmed, to)
+          break
+        }
+
+        const mixedA = `${label.en} / ${label.zh}`
+        const mixedB = `${label.zh} / ${label.en}`
+        if (trimmed === mixedA || trimmed === mixedB) {
           node.nodeValue = currentRaw.replace(trimmed, to)
           break
         }
       }
 
-      const fromPrefix = LAST_UPDATED[opposite]
-      const toPrefix = LAST_UPDATED[language]
+      const fromPrefix = LAST_UPDATED_PREFIX[opposite]
+      const toPrefix = LAST_UPDATED_PREFIX[language]
       if ((node.nodeValue ?? '').includes(fromPrefix)) {
         node.nodeValue = (node.nodeValue ?? '').replace(fromPrefix, toPrefix)
       }
@@ -88,8 +101,8 @@ function patchNextraUi(language: Language) {
     const current = searchInput.getAttribute('placeholder') ?? ''
     const allCandidates: string[] = [...SEARCH_PLACEHOLDER.en, ...SEARCH_PLACEHOLDER.zh]
     if (allCandidates.includes(current)) {
-      const wantsEllipsisVariant = current.includes('…')
-      const next = wantsEllipsisVariant ? SEARCH_PLACEHOLDER[language][1] : SEARCH_PLACEHOLDER[language][0]
+      const useEllipsis = current.includes('…')
+      const next = useEllipsis ? SEARCH_PLACEHOLDER[language][1] : SEARCH_PLACEHOLDER[language][0]
       if (next !== current) {
         searchInput.setAttribute('placeholder', next)
       }
@@ -101,7 +114,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('en')
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined') {
+      return
+    }
 
     const stored = window.localStorage.getItem(STORAGE_KEY)
     const initialLanguage: Language = stored === 'zh' || stored === 'en' ? stored : 'en'
@@ -112,8 +127,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     patchNextraUi(initialLanguage)
 
     const handleExternalLanguageChange = (event: Event) => {
-      const customEvent = event as CustomEvent<Language>
-      const next = customEvent.detail
+      const next = (event as CustomEvent<Language>).detail
       if (next === 'zh' || next === 'en') {
         setLanguageState(next)
         patchNextraUi(next)
@@ -133,7 +147,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         })
       }
     })
-
     observer.observe(document.body, { childList: true, subtree: true })
 
     return () => {
@@ -144,7 +157,6 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang)
-
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(STORAGE_KEY, lang)
       document.documentElement.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en')

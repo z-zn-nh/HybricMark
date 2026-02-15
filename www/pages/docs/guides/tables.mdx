@@ -1,0 +1,54 @@
+import { I18nText } from '../../../components/site/I18nProvider'
+
+# <I18nText en="Table Workflows" zh="表格工作流" />
+
+<I18nText
+  en="HybricMark ships a Typora-style table workflow: resize handles, top-left quick controls, and dedicated table context menu actions."
+  zh="HybricMark 内置 Typora 风格表格工作流：列宽拖拽、左上角快捷控件和独立表格右键菜单。"
+/>
+
+## <I18nText en="Built-in behavior" zh="内置行为" />
+
+- <I18nText en="Resizable columns (`Table.configure({ resizable: true })`)." zh="支持列宽拖拽（`Table.configure({ resizable: true })`）。" />
+- <I18nText en="Table alignment controls (left / center / right)." zh="支持表格整体对齐（左/中/右）。" />
+- <I18nText en="Row and column insert/delete operations from context menu." zh="支持右键菜单插入/删除行列。" />
+- <I18nText en="Merge cells helper for adjacent selections." zh="提供相邻单元格合并辅助。" />
+
+## <I18nText en="Programmatic commands" zh="编程接口命令" />
+
+```ts
+editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+editor.chain().focus().addColumnBefore().run()
+editor.chain().focus().addColumnAfter().run()
+editor.chain().focus().deleteColumn().run()
+editor.chain().focus().addRowBefore().run()
+editor.chain().focus().addRowAfter().run()
+editor.chain().focus().deleteRow().run()
+editor.chain().focus().mergeCells().run()
+editor.chain().focus().deleteTable().run()
+```
+
+## <I18nText en="Cell alignment" zh="单元格对齐" />
+
+<I18nText
+  en="HybricMark extends table cell/header attributes with `textAlign`, so alignment is persisted in document JSON."
+  zh="HybricMark 为 `tableCell/tableHeader` 扩展了 `textAlign` 属性，对齐状态可持久化到 JSON。"
+/>
+
+```json
+{
+  "type": "tableCell",
+  "attrs": {
+    "colspan": 1,
+    "rowspan": 1,
+    "colwidth": null,
+    "textAlign": "center"
+  }
+}
+```
+
+## <I18nText en="Best practices" zh="最佳实践" />
+
+- <I18nText en="For large tables, keep horizontal scrolling enabled on `.tableWrapper`." zh="大表格场景保留 `.tableWrapper` 横向滚动。" />
+- <I18nText en="Keep zebra row contrast readable in both light and dark mode." zh="斑马纹行色在明暗主题都保持可读对比。" />
+- <I18nText en="Use `editor.isActive('table')` to switch UI into table mode." zh="通过 `editor.isActive('table')` 切换到表格模式 UI。" />

@@ -1,42 +1,53 @@
-﻿import { I18nText } from '../../components/site/I18nProvider'
+import { I18nText } from '../../components/site/I18nProvider'
 
 # <I18nText en="API Reference" zh="API 参考" />
 
-<I18nText en="`HybricEditor` is the main integration component." zh="`HybricEditor` 是主集成组件。" />
+<I18nText
+  en="`HybricEditor` is the main integration component for app-level editing surfaces."
+  zh="`HybricEditor` 是应用侧编辑界面的核心集成组件。"
+/>
 
 ## <I18nText en="`<HybricEditor />` Props" zh="`<HybricEditor />` 属性" />
 
 | <I18nText en="Prop" zh="属性" /> | <I18nText en="Type" zh="类型" /> | <I18nText en="Default" zh="默认值" /> | <I18nText en="Description" zh="说明" /> |
 | --- | --- | --- | --- |
-| `content` | `string \| JSONContent` | `undefined` | <I18nText en="Initial document input. Accepts Markdown/HTML string or Tiptap JSON." zh="初始文档输入，支持 Markdown/HTML 字符串或 Tiptap JSON。" /> |
-| `editable` | `boolean` | `true` | <I18nText en="Toggles editable mode." zh="切换可编辑状态。" /> |
-| `placeholder` | `string` | `"Type '/' for commands..."` | <I18nText en="Placeholder text for empty document." zh="空文档时的占位文本。" /> |
-| `className` | `string` | `undefined` | <I18nText en="CSS class applied to editor root container." zh="挂载在编辑器根容器上的类名。" /> |
-| `extensions` | `Extension[]` | `[]` | <I18nText en="Additional Tiptap extensions merged with built-in stack." zh="与内置扩展栈合并的自定义 Tiptap 扩展。" /> |
-| `editorProps` | `EditorProps` | `undefined` | <I18nText en="Native ProseMirror handlers (`handleKeyDown`, `handlePaste`, etc)." zh="原生 ProseMirror 处理器（`handleKeyDown`、`handlePaste` 等）。" /> |
-| `onChange` | `(editor: Editor) => void` | `undefined` | <I18nText en="High-frequency callback on editor update. Useful for UI sync." zh="高频更新回调，适合联动 UI。" /> |
-| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | <I18nText en="Transaction-level callback for deep integration hooks." zh="事务级回调，适合深度集成场景。" /> |
-| `onDebouncedUpdate` | `({ editor, transaction }) => void` | `undefined` | <I18nText en="Debounced callback for persistence. Use this for DB writes." zh="防抖更新回调，建议用于数据库持久化写入。" /> |
-| `debounceMs` | `number` | `400` | <I18nText en="Delay for `onDebouncedUpdate` in milliseconds." zh="`onDebouncedUpdate` 的防抖毫秒值。" /> |
-| `onExtract` | `(data: { id: string; content: JSON; text: string }) => void` | `undefined` | <I18nText en="Fired from context action “Extract to Card”." zh="来自右键菜单“摘录到卡片”动作的回调。" /> |
+| `content` | `string \| JSONContent` | `undefined` | <I18nText en="Initial content input. Accepts Markdown, HTML, or Tiptap JSON." zh="初始内容输入，支持 Markdown、HTML 或 Tiptap JSON。" /> |
+| `editable` | `boolean` | `true` | <I18nText en="Editable/read-only toggle." zh="编辑/只读切换。" /> |
+| `placeholder` | `string` | `"Type '/' for commands..."` | <I18nText en="Placeholder shown for empty document." zh="空文档占位提示文本。" /> |
+| `className` | `string` | `undefined` | <I18nText en="Class name applied to editor root container." zh="挂载到编辑器根容器的类名。" /> |
+| `extensions` | `Extension[]` | `[]` | <I18nText en="Additional Tiptap extensions merged with default stack." zh="与默认扩展栈合并的自定义扩展。" /> |
+| `editorProps` | `EditorProps` | `undefined` | <I18nText en="Native ProseMirror handlers (`handleKeyDown`, `handlePaste`, `handleDrop`, ...)." zh="原生 ProseMirror 处理器（`handleKeyDown`、`handlePaste`、`handleDrop` 等）。" /> |
+| `onChange` | `(editor: Editor) => void` | `undefined` | <I18nText en="High-frequency callback on each document update." zh="高频文档更新回调。" /> |
+| `onUpdate` | `({ editor, transaction }) => void` | `undefined` | <I18nText en="Transaction-level callback for advanced integration." zh="事务级回调，适合高级集成。" /> |
+| `onDebouncedUpdate` | `({ editor, transaction }) => void` | `undefined` | <I18nText en="Debounced callback for persistence. Use this for DB/network writes." zh="防抖回调，建议用于数据库/网络写入。" /> |
+| `debounceMs` | `number` | `400` | <I18nText en="Debounce duration for `onDebouncedUpdate`." zh="`onDebouncedUpdate` 的防抖时间（毫秒）。" /> |
+| `onExtract` | `(data: { id: string; content: JSON; text: string }) => void` | `undefined` | <I18nText en="Triggered by context menu extract action." zh="由右键菜单摘录动作触发。" /> |
 
-> <I18nText en="Pro tip: use `onDebouncedUpdate` for network/database persistence. Writing on each keystroke causes unnecessary load and race conditions." zh="提示：请用 `onDebouncedUpdate` 做网络/数据库持久化。每次按键都写库会带来不必要负载与竞态。" />
+> <I18nText en="Pro tip: keep the editor uncontrolled while typing. Do not force-write `content` from parent state on every keypress, especially with Chinese IME." zh="提示：输入过程中保持编辑器非受控。不要在每次按键时从父状态强制回写 `content`，尤其是中文输入法场景。" />
+
+## <I18nText en="Callback signatures" zh="回调签名" />
+
+```ts
+onChange?: (editor: Editor) => void
+onUpdate?: (payload: { editor: Editor; transaction: Transaction }) => void
+onDebouncedUpdate?: (payload: { editor: Editor; transaction: Transaction }) => void
+onExtract?: (data: { id: string; content: JSONContent; text: string }) => void
+```
 
 ## <I18nText en="Editor instance methods" zh="编辑器实例方法" />
 
-<I18nText en="Callbacks expose the Tiptap editor instance." zh="回调中可直接拿到 Tiptap editor 实例。" />
-
 ```ts
 editor.chain().focus().toggleBold().run()
+editor.chain().focus().setLink({ href: 'https://example.com' }).run()
+editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+
 editor.getJSON()
 editor.getHTML()
 editor.commands.clearContent()
 editor.commands.focus()
 ```
 
-## <I18nText en="Data structure: block IDs" zh="数据结构：块级 ID" />
-
-<I18nText en="HybricMark attaches IDs to core block nodes for block-level workflows." zh="HybricMark 会为核心块节点附加 ID，支持块级工作流。" />
+## <I18nText en="Document model (block IDs)" zh="文档模型（块级 ID）" />
 
 ```json
 {
@@ -56,32 +67,41 @@ editor.commands.focus()
 }
 ```
 
-> <I18nText en="Why this matters: block IDs enable granular updates, comments by block, and deterministic references for Notion-like product features." zh="价值点：块级 ID 支持细粒度更新、按块评论和稳定引用，是 Notion 类产品的关键基础能力。" />
+> <I18nText en="Why this matters: block IDs enable granular patch updates, stable comment anchors, and deterministic card extraction." zh="价值点：块级 ID 支持精细 patch 更新、稳定评论锚点和可追踪摘录流程。" />
 
-## <I18nText en="Extension composition" zh="扩展组合" />
+## <I18nText en="Default extension surface (runtime)" zh="默认运行时扩展能力" />
+
+- <I18nText en="StarterKit + Link + Underline + Highlight + Sub/Sup." zh="StarterKit + Link + Underline + Highlight + 上下标。" />
+- <I18nText en="Task list, image, table, and mathematics support." zh="任务列表、图片、表格、数学公式支持。" />
+- <I18nText en="Unique block IDs (`@tiptap/extension-unique-id`)." zh="块级唯一 ID（`@tiptap/extension-unique-id`）。" />
+- <I18nText en="Markdown-aware paste parser with footnote/task-list support." zh="带注脚/任务列表的 Markdown 粘贴解析。" />
+- <I18nText en="Footnote interaction layer (reference + back reference)." zh="注脚引用与回跳交互层。" />
+
+<I18nText en="See full details on the Extensions page." zh="完整扩展细节请查看扩展列表页。" /> [<I18nText en="Extensions" zh="扩展列表" />](/docs/extensions)
+
+## <I18nText en="Security notes" zh="安全说明" />
+
+- <I18nText en="Client-side sanitization exists for HTML input, but backend sanitization is still mandatory." zh="前端对 HTML 输入有基础净化，但后端净化仍是必须项。" />
+- <I18nText en="Validate and whitelist URLs before persistence/rendering." zh="持久化与渲染前要做 URL 白名单校验。" />
+
+## <I18nText en="Quick integration example" zh="快速集成示例" />
 
 ```tsx
-import CharacterCount from '@tiptap/extension-character-count'
+import { HybricEditor } from 'hybricmark'
 
-<HybricEditor
-  content={doc}
-  extensions={[CharacterCount.configure({ limit: 10000 })]}
-  editorProps={{
-    handleKeyDown: (_view, event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
-        event.preventDefault()
-        return true
-      }
-      return false
-    },
-  }}
-/>
+export default function EditorPage() {
+  return (
+    <HybricEditor
+      content="# Hello"
+      debounceMs={800}
+      onDebouncedUpdate={({ editor }) => {
+        void fetch('/api/docs/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editor.getJSON()),
+        })
+      }}
+    />
+  )
+}
 ```
-
-## <I18nText en="Built-in default behavior" zh="内置默认行为" />
-
-- <I18nText en="Typora-like context menu actions." zh="Typora 风格上下文菜单。" />
-- <I18nText en="Markdown shortcut support for common blocks." zh="常见块的 Markdown 快捷输入支持。" />
-- <I18nText en="Link handling optimized for editing (`openOnClick: false` in editing flow)." zh="针对编辑体验优化的链接处理（编辑态 `openOnClick: false`）。" />
-- <I18nText en="Table tooling and inline helpers enabled." zh="表格工具与行内辅助能力默认可用。" />
-- <I18nText en="Optional extraction callback for block-level business actions." zh="提供可选摘录回调，支持块级业务动作。" />

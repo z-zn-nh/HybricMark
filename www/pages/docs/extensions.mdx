@@ -3,48 +3,66 @@ import { I18nText } from '../../components/site/I18nProvider'
 # <I18nText en="Extensions" zh="扩展列表" />
 
 <I18nText
-  en="HybricMark is powered by Tiptap extensions. This page lists the practical extension surface available by default and how to extend it safely."
-  zh="HybricMark 基于 Tiptap 扩展体系。本页列出默认可用能力及安全扩展方式。"
+  en="This page is generated from the real default stack in `src/lib/components/HybricEditor.tsx`."
+  zh="本页基于 `src/lib/components/HybricEditor.tsx` 的真实默认扩展栈整理。"
 />
 
-## <I18nText en="Typography (Marks)" zh="排版（Marks）" />
+## <I18nText en="Default stack (enabled by default)" zh="默认扩展栈（开箱启用）" />
 
-| <I18nText en="Feature" zh="能力" /> | <I18nText en="Status" zh="状态" /> | <I18nText en="Notes" zh="说明" /> |
-| --- | --- | --- |
-| Bold | ✅ | <I18nText en="Keyboard + context menu" zh="支持快捷键与右键菜单" /> |
-| Italic | ✅ | <I18nText en="Keyboard + context menu" zh="支持快捷键与右键菜单" /> |
-| Strike | ✅ | <I18nText en="Keyboard + context menu" zh="支持快捷键与右键菜单" /> |
-| Underline | ✅ | <I18nText en="Enabled in context format actions" zh="在格式菜单中可用" /> |
-| Inline Code | ✅ | <I18nText en="Typora-like inline code style" zh="Typora 风格行内代码" /> |
-| Highlight | ✅ | <I18nText en="Available from format actions" zh="可在格式动作中调用" /> |
-| Subscript / Superscript | ✅ | <I18nText en="Supported in formatting flow" zh="支持上下标格式化" /> |
-| Link | ✅ | <I18nText en="Editing-safe defaults + custom interaction" zh="编辑态安全默认 + 自定义交互" /> |
+| <I18nText en="Extension" zh="扩展" /> | <I18nText en="Package" zh="来源包" /> | <I18nText en="Configuration" zh="关键配置" /> | <I18nText en="Purpose" zh="作用" /> |
+| --- | --- | --- | --- |
+| `StarterKit` | `@tiptap/starter-kit` | `link: false` | <I18nText en="Core marks/nodes and keymaps." zh="核心 marks/nodes 与基础 keymap。" /> |
+| `HtmlBlock` | <I18nText en="internal extension" zh="内部扩展" /> | `group: 'block'`, `content: 'inline*'` | <I18nText en="Supports safe HTML-like block segments in document flow." zh="支持安全的 HTML 类块级片段。" /> |
+| `Link` | `@tiptap/extension-link` | `openOnClick: false`, `autolink: true`, `linkOnPaste: true` | <I18nText en="Editing-friendly link behavior." zh="编辑态友好的链接行为。" /> |
+| `Underline` | `@tiptap/extension-underline` | default | <I18nText en="Underline formatting." zh="下划线格式。" /> |
+| `Highlight` | `@tiptap/extension-highlight` | `multicolor: false` | <I18nText en="Single-color text highlight." zh="单色文本高亮。" /> |
+| `Subscript` | `@tiptap/extension-subscript` | default | <I18nText en="Subscript marks." zh="下标。" /> |
+| `Superscript` | `@tiptap/extension-superscript` | default | <I18nText en="Superscript marks." zh="上标。" /> |
+| `TaskList` + `TaskItem` | `@tiptap/extension-list` | `TaskItem.configure({ nested: true })` | <I18nText en="Nested task list support." zh="支持嵌套任务列表。" /> |
+| `Image` | `@tiptap/extension-image` | `inline: false`, `allowBase64: true`, `loading: 'lazy'`, `decoding: 'async'` | <I18nText en="Block image nodes with native lazy hints." zh="块级图片节点，带原生懒加载提示。" /> |
+| `TyporaTable` | `@tiptap/extension-table` | `resizable: true`, `lastColumnResizable: false` | <I18nText en="Resizable Typora-like table behavior." zh="可调列宽的 Typora 风格表格。" /> |
+| `TableRow` | `@tiptap/extension-table-row` | default | <I18nText en="Table row node." zh="表格行节点。" /> |
+| `TyporaTableHeader` | `@tiptap/extension-table-header` | custom `textAlign` attribute | <I18nText en="Header cells with alignment state." zh="带对齐状态的表头单元格。" /> |
+| `TyporaTableCell` | `@tiptap/extension-table-cell` | custom `textAlign` attribute | <I18nText en="Body cells with alignment state." zh="带对齐状态的表体单元格。" /> |
+| `Mathematics` | `@tiptap/extension-mathematics` | `throwOnError: false` | <I18nText en="Inline and block math rendering." zh="行内和块级数学公式渲染。" /> |
+| `UniqueID` | `@tiptap/extension-unique-id` | custom UUID generator + typed node list | <I18nText en="Stable block IDs for product data workflows." zh="稳定块级 ID，支持产品数据流程。" /> |
+| `Placeholder` | `@tiptap/extension-placeholder` | `placeholder` from prop | <I18nText en="Empty document placeholder text." zh="空文档占位提示。" /> |
 
-## <I18nText en="Block Nodes" zh="块级节点" />
+## <I18nText en="Internal behavior extensions" zh="内部行为扩展" />
 
-| <I18nText en="Node" zh="节点" /> | <I18nText en="Status" zh="状态" /> | <I18nText en="Notes" zh="说明" /> |
-| --- | --- | --- |
-| Paragraph | ✅ | <I18nText en="Block IDs supported" zh="支持块级 ID" /> |
-| Heading (H1-H6) | ✅ | <I18nText en="Typora-like heading styling" zh="Typora 风格标题样式" /> |
-| Bullet / Ordered List | ✅ | <I18nText en="Nested list interactions supported" zh="支持嵌套列表交互" /> |
-| Task List | ✅ | <I18nText en="Checkbox UX integrated" zh="集成任务列表勾选交互" /> |
-| Blockquote | ✅ | <I18nText en="Can be inserted from context actions" zh="可通过上下文动作插入" /> |
-| Code Block | ✅ | <I18nText en="Keyboard workflow tuned for writing" zh="针对写作流程做过按键调优" /> |
-| Table | ✅ | <I18nText en="Resizable table with contextual controls" zh="可调列宽 + 表格上下文操作" /> |
-| Image | ✅ | <I18nText en="Upload flow is app-owned" zh="上传链路由业务侧控制" /> |
-| Horizontal Rule | ✅ | <I18nText en="Insert support in context menu" zh="支持通过菜单插入分割线" /> |
+| <I18nText en="Extension" zh="扩展" /> | <I18nText en="What it handles" zh="处理内容" /> |
+| --- | --- |
+| `KeyboardBehavior` | <I18nText en="List/task shortcuts, code block exit (`Mod+Enter`), and writing-oriented key behavior." zh="列表/任务快捷输入、代码块退出（`Mod+Enter`）及写作导向按键行为。" /> |
+| `HeadingHintBehavior` | <I18nText en="Shows heading hints (`h3~h6`) when focused." zh="聚焦时显示 `h3~h6` 提示标记。" /> |
+| `MarkdownPasteBehavior` | <I18nText en="Parses markdown-like clipboard text into rich nodes when appropriate." zh="在合适场景把剪贴板 Markdown 文本解析为富文本节点。" /> |
+| `FootnoteSyntaxBehavior` | <I18nText en="Footnote token rendering, reference/back-reference interaction." zh="注脚标记渲染与跳转/回跳交互。" /> |
 
-## <I18nText en="Advanced Integrations" zh="高级集成能力" />
+## <I18nText en="Unique ID coverage" zh="块级 ID 覆盖范围" />
 
-| <I18nText en="Capability" zh="能力" /> | <I18nText en="Status" zh="状态" /> | <I18nText en="How" zh="接入方式" /> |
-| --- | --- | --- |
-| Placeholder | ✅ | <I18nText en="Use `placeholder` prop" zh="通过 `placeholder` 属性配置" /> |
-| Unique Block IDs | ✅ | <I18nText en="Configured in internal extension stack" zh="内置扩展栈已配置" /> |
-| Debounced persistence | ✅ | <I18nText en="Use `onDebouncedUpdate` + `debounceMs`" zh="通过 `onDebouncedUpdate` + `debounceMs`" /> |
-| Custom extensions | ✅ | <I18nText en="Pass via `extensions` prop" zh="通过 `extensions` 属性注入" /> |
-| ProseMirror handlers | ✅ | <I18nText en="Use `editorProps` (`handlePaste`, `handleDrop`, `handleKeyDown`...)" zh="通过 `editorProps` 接管 (`handlePaste`/`handleDrop`/`handleKeyDown`...)" /> |
+<I18nText en="`UniqueID` is configured for these node types:" zh="`UniqueID` 当前覆盖以下节点类型：" />
 
-## <I18nText en="Adding your own extension" zh="添加自定义扩展" />
+```ts
+[
+  'heading',
+  'paragraph',
+  'bulletList',
+  'orderedList',
+  'listItem',
+  'blockquote',
+  'codeBlock',
+]
+```
+
+## <I18nText en="Optional / not in default stack" zh="可选能力（默认不启用）" />
+
+- `src/lib/extensions/HybridLink.tsx`
+
+<I18nText
+  en="`HybridLink` is available as an experimental extension file, but the current default editor stack uses standard `Link` for production stability."
+  zh="`HybridLink` 作为实验性扩展文件可用；当前默认栈为保证稳定性仍使用标准 `Link`。"
+/>
+
+## <I18nText en="How to add your own extension" zh="如何追加自定义扩展" />
 
 ```tsx
 import CharacterCount from '@tiptap/extension-character-count'
@@ -56,5 +74,3 @@ import CharacterCount from '@tiptap/extension-character-count'
   ]}
 />
 ```
-
-> <I18nText en="Recommendation: Keep business-specific features (mentions, embeds, workflow states) in custom extensions, while leaving core writing UX to HybricMark defaults." zh="建议：业务特性（@提及、嵌入、流程状态）放在自定义扩展层，核心写作体验沿用 HybricMark 默认能力。" />

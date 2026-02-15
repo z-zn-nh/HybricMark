@@ -3,22 +3,22 @@ import { I18nText } from '../../../components/site/I18nProvider'
 # <I18nText en="Block Identity" zh="块级身份" />
 
 <I18nText
-  en="Block identity is the core reason HybricMark is better suited for product use cases than plain Markdown pipelines."
-  zh="块级身份是 HybricMark 比纯 Markdown 管线更适合产品场景的核心能力。"
+  en="Block identity is the core reason HybricMark is suited for product-grade editor systems."
+  zh="块级身份是 HybricMark 适合产品级编辑系统的核心原因。"
 />
 
-## <I18nText en="The baseline limitation" zh="原生方案的限制" />
+## <I18nText en="What plain Markdown misses" zh="纯 Markdown 的缺口" />
 
 <I18nText
-  en="Traditional Markdown stores structure but does not give each block a durable ID. Without IDs, you cannot safely target a paragraph across edits."
-  zh="传统 Markdown 保存了结构，但不会为每个块提供稳定 ID。没有 ID，就很难在多次编辑后精确定位同一段内容。"
+  en="Markdown stores structure, but does not guarantee durable IDs for each paragraph or heading. After edits, it is hard to reference one exact block."
+  zh="Markdown 保存结构，但不会保证每个段落/标题都有稳定 ID。经过编辑后，很难精准引用某个块。"
 />
 
-## <I18nText en="HybricMark approach" zh="HybricMark 的做法" />
+## <I18nText en="HybricMark strategy" zh="HybricMark 策略" />
 
 <I18nText
-  en="HybricMark generates UUID-like identifiers under `attrs.id` for core nodes (paragraphs, headings, lists, list items, and more based on extension config)."
-  zh="HybricMark 会在核心节点（段落、标题、列表、列表项等）上生成 `attrs.id` 形式的唯一标识（具体类型由扩展配置决定）。"
+  en="`@tiptap/extension-unique-id` is configured in the default stack. Core block nodes receive `attrs.id` during editing."
+  zh="默认扩展栈内已配置 `@tiptap/extension-unique-id`，核心块节点在编辑过程中自动获得 `attrs.id`。"
 />
 
 ```json
@@ -31,16 +31,16 @@ import { I18nText } from '../../../components/site/I18nProvider'
 }
 ```
 
-## <I18nText en="What this unlocks" zh="这能带来什么" />
+## <I18nText en="What this unlocks" zh="它带来的能力" />
 
-- <I18nText en="Block comments and annotation anchors" zh="块级评论和批注锚点" />
-- <I18nText en="Bidirectional references between blocks" zh="块与块之间的双向链接" />
+- <I18nText en="Block comments and review anchors" zh="按块评论与评审锚点" />
+- <I18nText en="Deterministic references between cards/blocks" zh="卡片与块之间的稳定引用" />
 - <I18nText en="Partial persistence (patch only changed blocks)" zh="局部持久化（只 patch 变更块）" />
-- <I18nText en="Notion-like card extraction and linking workflows" zh="Notion 风格的摘录卡片与关联工作流" />
+- <I18nText en="Reliable extract-to-card workflows" zh="稳定的摘录到卡片工作流" />
 
-## <I18nText en="Implementation note" zh="实现建议" />
+## <I18nText en="Storage recommendation" zh="存储建议" />
 
 <I18nText
-  en="Persist JSON, not rendered HTML, if your product depends on stable block identity. HTML can still be derived at render/export time."
-  zh="如果业务依赖稳定块标识，优先持久化 JSON 而不是渲染后的 HTML。HTML 适合在展示/导出阶段再生成。"
+  en="Persist JSON as source of truth. Derive HTML only for rendering/export. This keeps block IDs and semantic node structure intact."
+  zh="建议以 JSON 作为事实源，HTML 仅用于展示或导出，这样可以保留块级 ID 与语义结构。"
 />
