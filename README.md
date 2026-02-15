@@ -1,59 +1,105 @@
 # hybricmark
 
 [![npm version](https://img.shields.io/npm/v/hybricmark.svg)](https://www.npmjs.com/package/hybricmark)
+[![license](https://img.shields.io/npm/l/hybricmark.svg)](./LICENSE)
 
-A Headless, Typora-like Markdown Editor for React. Built on Tiptap.
+Headless, Typora-like Markdown editor for React. Built on Tiptap.
 
--> [Live Demo & Docs](https://your-vercel-link-placeholder.com)
+- Live docs: https://txlan.top
+- Playground: https://txlan.top/playground
 
-## Features
+## Why HybricMark
 
-- Hybrid Editing (WYSIWYG + Markdown shortcuts).
-- Unique Block IDs (Ready for block-based apps).
-- Typora-style Context Menu.
-- Performance optimized for large docs.
+- Block-level UUIDs via `attrs.id` for product workflows (comments, references, patch updates).
+- Typora-style writing UX (context menu + keyboard shortcuts + markdown shortcuts).
+- Built-in table controls, footnotes, math, task lists, link interaction, and image support.
+- Uncontrolled editor architecture optimized for IME safety and large-document usage.
 
-## Installation
+## Install
 
 ```bash
-npm install hybricmark
+npm install hybricmark @tiptap/core @tiptap/react @tiptap/starter-kit react react-dom
 ```
 
-## Usage
+## Quick Start
 
 ```tsx
-import { useState } from "react";
-import { HybricEditor } from "hybricmark";
+import { useState } from 'react'
+import { HybricEditor } from 'hybricmark'
+import 'hybricmark/style.css'
+import 'katex/dist/katex.min.css'
 
 export default function App() {
-  const [json, setJson] = useState(null);
+  const [doc, setDoc] = useState<object | null>(null)
 
   return (
-    <div style={{ maxWidth: 860, margin: "40px auto" }}>
+    <div style={{ maxWidth: 920, margin: '40px auto' }}>
       <HybricEditor
-        content="# Hello hybricmark\n\nStart typing..."
-        editable
-        onChange={(editor) => setJson(editor.getJSON())}
+        content="# Hello HybricMark\n\nType '/' for commands..."
+        debounceMs={800}
+        onChange={(editor) => setDoc(editor.getJSON())}
+        onDebouncedUpdate={({ editor }) => {
+          // Persist to DB/API here
+          console.log('save', editor.getJSON())
+        }}
       />
-      <pre style={{ marginTop: 24, fontSize: 12 }}>
-        {JSON.stringify(json, null, 2)}
+
+      <pre style={{ marginTop: 20, fontSize: 12 }}>
+        {JSON.stringify(doc, null, 2)}
       </pre>
     </div>
-  );
+  )
 }
 ```
 
-## API
+## Core API
 
-### `HybricEditor` Props
+`HybricEditor` props (high-level):
 
-- `content?: Content` - Initial content.
-- `editable?: boolean` - Whether the editor is editable.
-- `onChange?: (editor) => void` - Called on editor updates.
-- `onExtract?: (data: { id: string; content: JSON }) => void` - Called when extracting block data.
-- `className?: string` - Custom wrapper class.
+- `content?: string | JSONContent`
+- `editable?: boolean`
+- `placeholder?: string`
+- `extensions?: Extension[]`
+- `editorProps?: EditorProps`
+- `debounceMs?: number`
+- `onChange?: (editor: Editor) => void`
+- `onUpdate?: ({ editor, transaction }) => void`
+- `onDebouncedUpdate?: ({ editor, transaction }) => void`
+- `onExtract?: (data: { id: string; content: JSONContent; text: string }) => void`
 
-## Development
+Full reference: https://txlan.top/docs/api
+
+## Block Identity Example
+
+```json
+{
+  "type": "paragraph",
+  "attrs": {
+    "id": "f7652fb0-0815-4f41-9efb-b67fe7b18390"
+  },
+  "content": [{ "type": "text", "text": "Block-level targeting" }]
+}
+```
+
+## Notes for Next.js
+
+- Mount editor client-side (`dynamic(..., { ssr: false })`) for editing surfaces.
+- Keep editor uncontrolled during typing (especially Chinese IME scenarios).
+
+## Docs Index
+
+- Getting started: https://txlan.top/docs/getting-started
+- API reference: https://txlan.top/docs/api
+- Extensions: https://txlan.top/docs/extensions
+- Guides:
+  - Saving to DB
+  - Image uploads
+  - Tables
+  - Links
+  - Keyboard shortcuts
+  - Footnotes & math
+
+## Local Development
 
 ```bash
 npm run dev
