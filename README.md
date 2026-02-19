@@ -8,6 +8,13 @@ Headless, Typora-like Markdown editor for React. Built on Tiptap.
 - Live docs: https://txlan.top
 - Playground: https://txlan.top/playground
 
+## Recent Fixes (v0.1.2)
+
+- Fixed browser runtime error in ESM consumers:
+  - `Calling 'require' for "react" in an environment that doesn't expose the require function.`
+- Root cause was unstable bundler output in library build.
+- Build pipeline is now pinned to stable Vite 7 to keep `dist/hybricmark.es.js` browser-safe.
+
 ## Why HybricMark
 
 - Block-level UUIDs via `attrs.id` for product workflows (comments, references, patch updates).

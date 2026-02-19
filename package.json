@@ -1,7 +1,7 @@
 {
   "name": "hybricmark",
   "private": false,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A headless, Typora-like Markdown editor for React, built on Tiptap.",
   "license": "MIT",
   "keywords": [
@@ -111,9 +111,9 @@
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",
-    "vite": "^8.0.0-beta.13"
+    "vite": "^7.0.4"
   },
   "overrides": {
-    "vite": "^8.0.0-beta.13"
+    "vite": "^7.0.4"
   }
 }
