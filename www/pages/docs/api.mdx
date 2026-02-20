@@ -34,6 +34,37 @@ onDebouncedUpdate?: (payload: { editor: Editor; transaction: Transaction }) => v
 onExtract?: (data: { id: string; content: JSONContent; text: string }) => void
 ```
 
+## <I18nText en="Outline / Contents Integration Contract" zh="大纲 / Contents 集成约定" />
+
+<I18nText
+  en="HybricMark does not force a fixed outline UI. Build outline in app layer via update hooks to keep typing performance stable."
+  zh="HybricMark 不强制内置固定大纲 UI。建议在应用层基于更新回调构建大纲，以保持输入性能稳定。"
+/>
+
+```ts
+type OutlineItem = {
+  id: string
+  level: 1 | 2 | 3 | 4 | 5 | 6
+  text: string
+  blockId?: string
+}
+```
+
+<I18nText
+  en="Recommended trigger points for recomputing outline:"
+  zh="推荐的大纲重算触发点："
+/>
+
+- <I18nText en="Enter/new line commits." zh="Enter 换行提交后。" />
+- <I18nText en="Heading line blur / cursor leaves heading." zh="标题行失焦或光标离开标题行后。" />
+- <I18nText en="Paste/delete that changes heading structure." zh="粘贴/删除导致标题结构变化时。" />
+- <I18nText en="Debounced idle update (`onDebouncedUpdate`)." zh="防抖空闲更新（`onDebouncedUpdate`）。" />
+
+<I18nText
+  en="Use heading `attrs.id` (when present) as stable anchor key; fallback to document position for navigation."
+  zh="优先使用标题节点 `attrs.id` 作为稳定锚点键；缺失时再回退到文档位置。"
+/>
+
 ## <I18nText en="Editor instance methods" zh="编辑器实例方法" />
 
 ```ts

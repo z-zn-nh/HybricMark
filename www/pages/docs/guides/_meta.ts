@@ -1,5 +1,6 @@
 const meta = {
   saving: 'Saving to Database',
+  outline: 'Outline / Contents',
   styling: 'Custom Styling',
   images: 'Handling Image Uploads',
   tables: 'Table Workflows',

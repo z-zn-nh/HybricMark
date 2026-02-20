@@ -8,7 +8,13 @@ Headless, Typora-like Markdown editor for React. Built on Tiptap.
 - Live docs: https://txlan.top
 - Playground: https://txlan.top/playground
 
-## Recent Fixes (v0.1.2)
+## Recent Updates (v0.1.3)
+
+- Documentation refresh for app-level outline/contents integration.
+- Added API docs and guide entries for heading extraction + outline navigation wiring.
+- `v0.1.2` build stability fix is kept (stable Vite 7 output, browser-safe ESM build).
+
+## Previous Fixes (v0.1.2)
 
 - Fixed browser runtime error in ESM consumers:
   - `Calling 'require' for "react" in an environment that doesn't expose the require function.`
@@ -76,6 +82,30 @@ export default function App() {
 
 Full reference: https://txlan.top/docs/api
 
+## Outline / Contents Integration (App Side)
+
+HybricMark keeps editor core focused and exposes update hooks so the app can own outline UI.
+
+Recommended flow:
+
+1. Use `onDebouncedUpdate` for low-noise heading extraction.
+2. Build a heading list from `editor.getJSON()` (H1~H3 or your own depth).
+3. Render the list in your right-side Contents panel.
+4. On click, resolve heading block and scroll/focus to it in the editor surface.
+
+Example shape:
+
+```ts
+type OutlineItem = {
+  id: string
+  level: number
+  text: string
+  blockId?: string
+}
+```
+
+This keeps typing smooth (no per-keystroke outline re-render) and makes app UX fully customizable.
+
 ## Block Identity Example
 
 ```json
@@ -100,6 +130,7 @@ Full reference: https://txlan.top/docs/api
 - Extensions: https://txlan.top/docs/extensions
 - Guides:
   - Saving to DB
+  - Outline / Contents
   - Image uploads
   - Tables
   - Links

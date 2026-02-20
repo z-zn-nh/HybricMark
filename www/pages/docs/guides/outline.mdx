@@ -1,0 +1,77 @@
+import { I18nText } from '../../../components/site/I18nProvider'
+
+# <I18nText en="Outline / Contents Integration" zh="大纲 / Contents 集成" />
+
+<I18nText
+  en="Build right-side Contents in app layer from HybricMark update hooks. This keeps editor core minimal and avoids per-keystroke UI re-render."
+  zh="建议在应用层基于 HybricMark 更新回调构建右侧 Contents。这样能保持编辑器核心简洁，并避免逐字重渲染大纲。"
+/>
+
+## <I18nText en="Recommended data shape" zh="推荐数据结构" />
+
+```ts
+type OutlineItem = {
+  id: string
+  level: 1 | 2 | 3 | 4 | 5 | 6
+  text: string
+  blockId?: string
+}
+```
+
+## <I18nText en="When to recompute outline" zh="大纲重算时机" />
+
+- <I18nText en="After Enter/new line commits." zh="Enter 换行提交后。" />
+- <I18nText en="When cursor leaves heading line." zh="光标离开标题行后。" />
+- <I18nText en="After paste/delete that changes heading structure." zh="粘贴/删除导致标题结构变化后。" />
+- <I18nText en="On idle debounce callback (`onDebouncedUpdate`)." zh="在防抖回调（`onDebouncedUpdate`）触发时。" />
+
+## <I18nText en="Integration example" zh="集成示例" />
+
+```tsx
+import { useMemo, useState } from 'react'
+import { HybricEditor } from 'hybricmark'
+
+function extractOutline(doc: any): OutlineItem[] {
+  const items: OutlineItem[] = []
+  const walk = (node: any) => {
+    if (!node) return
+    if (node.type === 'heading') {
+      const text = (node.content ?? [])
+        .map((child: any) => child?.text ?? '')
+        .join('')
+        .trim()
+      if (text) {
+        items.push({
+          id: node.attrs?.id ?? `${node.attrs?.level ?? 1}-${items.length}`,
+          level: (node.attrs?.level ?? 1) as 1 | 2 | 3 | 4 | 5 | 6,
+          text,
+          blockId: node.attrs?.id,
+        })
+      }
+    }
+    ;(node.content ?? []).forEach(walk)
+  }
+  walk(doc)
+  return items
+}
+
+export default function EditorWithContents() {
+  const [outline, setOutline] = useState<OutlineItem[]>([])
+
+  return (
+    <HybricEditor
+      debounceMs={500}
+      onDebouncedUpdate={({ editor }) => {
+        setOutline(extractOutline(editor.getJSON()))
+      }}
+    />
+  )
+}
+```
+
+## <I18nText en="Navigation note" zh="跳转说明" />
+
+<I18nText
+  en="Use heading `attrs.id` as stable target key when available. If your app stores editor instance, implement a `scrollToHeading(id)` helper at app layer."
+  zh="优先使用标题节点 `attrs.id` 作为稳定跳转键。若应用层保存了 editor 实例，可在应用层实现 `scrollToHeading(id)`。"
+/>
