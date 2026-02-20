@@ -745,6 +745,28 @@ const KeyboardBehavior = Extension.create({
         view.dispatch(tr.scrollIntoView());
         return true;
       },
+      Delete: () => {
+        const { state, view } = this.editor;
+        const { selection } = state;
+
+        if (!selection.empty) {
+          view.dispatch(state.tr.deleteSelection().scrollIntoView());
+          return true;
+        }
+
+        const { $from } = selection;
+        if (
+          !$from.parent.isTextblock ||
+          $from.parentOffset >= $from.parent.content.size
+        ) {
+          return false;
+        }
+
+        const from = selection.from;
+        const to = from + 1;
+        view.dispatch(state.tr.delete(from, to).scrollIntoView());
+        return true;
+      },
       Tab: () => {
         if (this.editor.isActive("codeBlock")) {
           return false;
