@@ -136,3 +136,17 @@ export default function EditorPage() {
   )
 }
 ```
+
+## <I18nText en="Outline navigation helper contract" zh="大纲跳转辅助约定" />
+
+```ts
+type OutlineNavigation = {
+  scrollToHeading: (item: OutlineItem) => void
+  setActiveHeadingId: (id: string | null) => void
+}
+```
+
+<I18nText
+  en="Keep navigation/highlight behavior in app layer. HybricMark only provides stable heading data (`attrs.id`) and update hooks."
+  zh="跳转与高亮行为建议保留在应用层，HybricMark 提供稳定标题数据（`attrs.id`）与更新钩子。"
+/>

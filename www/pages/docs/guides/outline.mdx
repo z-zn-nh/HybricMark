@@ -75,3 +75,25 @@ export default function EditorWithContents() {
   en="Use heading `attrs.id` as stable target key when available. If your app stores editor instance, implement a `scrollToHeading(id)` helper at app layer."
   zh="优先使用标题节点 `attrs.id` 作为稳定跳转键。若应用层保存了 editor 实例，可在应用层实现 `scrollToHeading(id)`。"
 />
+
+## <I18nText en="Click-to-scroll helper" zh="点击跳转辅助函数" />
+
+```ts
+function scrollToHeading(editor: Editor, item: OutlineItem) {
+  if (!item.blockId) return
+  const target = editor.view.dom.querySelector(
+    `[data-id="${item.blockId}"]`,
+  ) as HTMLElement | null
+
+  if (!target) return
+  target.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  editor.commands.focus()
+}
+```
+
+## <I18nText en="Active heading synchronization" zh="当前章节高亮同步" />
+
+<I18nText
+  en="Use selection updates to resolve the nearest heading above cursor, then sync app-level active outline state."
+  zh="监听 selection 更新，定位光标上方最近标题，再同步应用层 active 大纲状态。"
+/>

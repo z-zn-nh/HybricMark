@@ -542,6 +542,24 @@ const exitListItemToParagraph = (editor: Editor): boolean => {
   return true;
 };
 
+const isListContainerName = (name: string): boolean =>
+  name === "bulletList" || name === "orderedList" || name === "taskList";
+
+const getPreviousSignificantSibling = (
+  parent: ProseMirrorNode,
+  fromIndex: number,
+): ProseMirrorNode | null => {
+  for (let index = fromIndex - 1; index >= 0; index -= 1) {
+    const node = parent.child(index);
+    if (node.type.name === "paragraph" && node.textContent.trim().length === 0) {
+      continue;
+    }
+    return node;
+  }
+
+  return null;
+};
+
 const TyporaTableCell = TableCell.extend({
   addAttributes() {
     return {
@@ -725,6 +743,37 @@ const KeyboardBehavior = Extension.create({
         }
 
         const { $from } = selection;
+
+        if ($from.parentOffset === 0) {
+          let listItemDepth = -1;
+          for (let depth = $from.depth; depth > 0; depth -= 1) {
+            const name = $from.node(depth).type.name;
+            if (name === "listItem" || name === "taskItem") {
+              listItemDepth = depth;
+              break;
+            }
+          }
+
+          const listDepth = listItemDepth - 1;
+          const parentDepth = listDepth - 1;
+          if (listDepth > 0 && parentDepth >= 0) {
+            const currentList = $from.node(listDepth);
+            if (isListContainerName(currentList.type.name)) {
+              const parent = $from.node(parentDepth);
+              const listIndex = $from.index(parentDepth);
+              const previousSibling = getPreviousSignificantSibling(parent, listIndex);
+
+              if (
+                previousSibling &&
+                isListContainerName(previousSibling.type.name) &&
+                previousSibling.type.name !== currentList.type.name
+              ) {
+                return exitListItemToParagraph(this.editor);
+              }
+            }
+          }
+        }
+
         if ($from.parent.type.name !== "codeBlock") {
           return false;
         }
@@ -743,28 +792,6 @@ const KeyboardBehavior = Extension.create({
         let tr = state.tr.replaceWith(from, to, paragraphNode);
         tr = tr.setSelection(TextSelection.create(tr.doc, from + 1));
         view.dispatch(tr.scrollIntoView());
-        return true;
-      },
-      Delete: () => {
-        const { state, view } = this.editor;
-        const { selection } = state;
-
-        if (!selection.empty) {
-          view.dispatch(state.tr.deleteSelection().scrollIntoView());
-          return true;
-        }
-
-        const { $from } = selection;
-        if (
-          !$from.parent.isTextblock ||
-          $from.parentOffset >= $from.parent.content.size
-        ) {
-          return false;
-        }
-
-        const from = selection.from;
-        const to = from + 1;
-        view.dispatch(state.tr.delete(from, to).scrollIntoView());
         return true;
       },
       Tab: () => {

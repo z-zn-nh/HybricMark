@@ -8,14 +8,12 @@ Headless, Typora-like Markdown editor for React. Built on Tiptap.
 - Live docs: https://txlan.top
 - Playground: https://txlan.top/playground
 
-## Recent Updates (v0.1.5)
+## Recent Updates (v0.1.6)
 
-- Documentation refresh for app-level outline/contents integration.
-- Added API docs and guide entries for heading extraction + outline navigation wiring.
-- Rolled back unstable list-merge interception logic from experimental builds.
-- Restored stable `Backspace` behavior (paragraph + list item editing path verified through app smoke run).
-- Added a conservative `Delete` fallback for plain textblock forward-delete when browser default key handling is suppressed.
-- `v0.1.2` build stability fix is kept (stable Vite 7 output, browser-safe ESM build).
+- Removed custom `Delete` interception in keyboard behavior to restore native ProseMirror forward-delete flow.
+- Kept stable list/headline editing path by avoiding aggressive key remapping in core editing shortcuts.
+- Refreshed docs (`README` + `www/docs`) for app-level outline integration (`onDebouncedUpdate`, heading extraction, click-to-scroll contract).
+- `v0.1.2` build stability fix remains (stable Vite 7 output, browser-safe ESM build).
 
 ## Previous Fixes (v0.1.2)
 
